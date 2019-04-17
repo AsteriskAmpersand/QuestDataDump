@@ -1,0 +1,57 @@
+//------------------------------------------------
+//--- 010 Editor v9.0.1 Binary Template
+//
+//      File: 
+//   Authors: hexhexhex
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+//common\em\em_difficulty.dtt_dif
+struct Header{
+    uint32 FileID;
+ };
+
+struct monSolo{
+    uint32 stringCountSolo;
+
+struct soloValues{
+    uint32 valueCount;
+    float monHPMultiplier;
+    float monDmgMultiplier;
+    float playerDmgMultiplier;
+    float monPartHP;
+    float monStatusBase;
+    float monStatusBuildup;
+    float monStun;
+    float monExhaust;
+    float monMount;
+    };
+};
+
+struct monMulti{
+uint32 stringCountMulti;
+    
+struct multiValues{
+    uint32 valueCount;
+    float monHPMultiplier;
+    float monDmgMultiplier;
+    float playerDmgMultiplier;
+    float monPartHP;
+    float monStatusBase;
+    float monStatusBuildup;
+    float monStun;
+    float monExhaust;
+    float monMount;
+    };
+};
+
+Header DifficultyHeader;
+monSolo SoloCount;
+soloValues soloMultipliers[100];
+monMulti MultiCount;
+multiValues mpMultipliers[100];
+

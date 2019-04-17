@@ -18,6 +18,11 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Python Compiled
+*.pyc
+*.spyproject
+\pycache
+
 # =========================
 # Operating System Files
 # =========================

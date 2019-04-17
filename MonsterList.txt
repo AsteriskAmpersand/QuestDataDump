@@ -1,0 +1,65 @@
+Empty, -1
+Anjanath, 00
+Rathalos, 01
+Aptonoth, 02
+Jagras, 03
+Zorah Magdaros, 04
+Mosswine, 05
+Gajau, 06
+Great Jagras, 07
+Kestodon(Male), 08
+Rathian, 09
+Pink Rathian, 0A
+Azure Rathalos, 0B
+Diablos, 0C
+Black Diablos, 0D
+Kirin, 0E
+Behemoth, 0F
+Kushala Daora, 10
+Lunastra, 11
+Teostra, 12
+Lavasioth, 13
+Deviljho, 14
+Barroth, 15
+Uragaan, 16
+Unavailable, 17
+Pukei, 18
+Nergigante, 19
+Xeno'Jiiva, 1A
+Kulu-Ya-Ku, 1B
+Tzitzi-Ya-Ku, 1C
+Jyuratodus, 1D
+Tobi-Kadachi, 1E
+Paolumu, 1F
+Legiana, 20
+Great Girros, 21
+Odogaron, 22
+Radobaan, 23
+Vaal Hazak, 24
+Dodogama, 25
+Kulve Taroth, 26
+Bazelgeuse, 27
+Apceros, 28
+Kelbi, 29
+Kelbi(2), 2A
+Hornetaurs, 2B
+Vespoid, 2C
+Mernos, 2D
+Kestodon(Female), 2E
+Raphinos, 2F
+Shamos, 30
+Barnos, 31
+Girros, 32
+unknown, 33
+Gastodons, 34
+Noios, 35
+Magmacore, 36
+Magmacore2, 37
+Gajalaka, 38
+unknown, 39
+unknown, 3A
+unknown, 3B
+Unknown, 3C 
+(???)Rathian, 3D
+Golden Tribe, 3E
+unknown, 3F

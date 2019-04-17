@@ -1,0 +1,116 @@
+//------------------------------------------------
+//--- 010 Editor v9.0 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+struct ObjectiveData{
+        ubyte objectiveID;
+        ubyte event;
+        ushort unkn11;
+        ushort objectiveID;
+        ushort objectiveAmount;
+    };
+
+struct MIBHeader{
+    uint16 mibSignature;
+    uint32 padding;
+    uint32 mibID;
+    ubyte starRating;
+    uint32 unkn1;
+    uint32 unkn2;
+    uint32 rankRewards;
+    uint32 mapID;
+    uint32 unkn4;
+    uint32 playerSpawn;
+    uint32 binaryMapToggle;
+    uint32 dayNightControl;
+    uint32 weatherControl;
+    uint32 unkn5;
+    uint32 zennyReward;
+    uint32 faintPenalty;
+    uint32 unkn7;
+    uint32 questTimer;
+    ubyte unkn9;
+    ushort monsterIconId[5];
+    ubyte hrRestriction;
+    uint32 unkn10;   
+};
+
+struct MIBObjective{
+    ObjectiveData objectiveData[2];
+    ubyte subobjectivesRequired;
+    ObjectiveData subObjective[2];
+    uint32 unkn11;
+    uint32 unkn12;
+    uint32 highlightedUnknown2;
+    ubyte questType;
+    ubyte questTypeIcon;
+    ubyte ATFlag; //02 enables AT global modifier
+    ubyte unkn14;
+    uint32 REMID1;
+    uint32 REMID2;
+    uint32 REMID3; //needs verification
+    uint32 SUPPID1;
+    uint32 unkn15; //SUPPID2?
+    uint32 unkn16; //SUPPID3?
+    uint32 unkn17;
+    uint32 EXP;
+    uint32 unkn18;
+    uint32 unkn19;
+};
+
+struct Monster{
+    uint32 monsterID;
+    uint32 spawnID;
+    uint32 unknown1;
+    ubyte temperedFlag;
+    uint32 monsterHealth;
+    uint32 monsterDamage;
+    uint32 playerDamage;
+    uint32 HealthAndDamageVariance; //Damage needs confirmation, but makes sense
+    uint32 size;
+    uint32 sizeVariation; //need confirmation
+    uint32 unknown2;
+    uint32 partHP;
+    uint32 statusBase;
+    uint32 statusBuildUp;
+    uint32 stun;
+    uint32 exhaust;
+    uint32 mount;
+};
+
+struct MIBTail{
+    uint32 unk0;
+    uint32 unk1;
+    uint32 unk2;
+    uint32 unk3;
+    ubyte  unk4;
+    uint32 unk5;
+    uint32 unk6;
+    uint32 unk7;
+    uint32 spawnRules[4];
+    uint32 spawnHP;
+    uint32 spawnChance0;
+    uint32 spawnTimer;
+    uint32 spawnChanceRest[6];
+    uint32 unkn22[50];
+    uint32 showSmallMonIcon[5];
+    uint32 smallMonIconID[5];
+    uint32 arenaSetId;
+    uint32 playerCountRestriction;
+    uint32 unkn23;
+    uint32 fenceControl;
+    uint32 unkn24[11];
+};
+
+MIBHeader Header;
+MIBObjective Objectives;
+Monster Monsters[7];
+MIBTail SpawnData;
