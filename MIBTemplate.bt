@@ -92,7 +92,7 @@ struct MIBTail{
     uint32 unk2;
     uint32 unk3;
     ubyte  unk4;
-    uint32 unk5;
+    uint32 mpDifficultyModifier;
     uint32 unk6;
     uint32 unk7;
     uint32 spawnRules[4];

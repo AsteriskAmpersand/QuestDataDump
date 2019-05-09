@@ -18,7 +18,8 @@ import csv
 import json
 from DTT_EPG import EPG_Library
 from DTT_EDA import EDA_Library, StatusData
-
+from pylatex import Document, Section, Subsection, Subsubsection, table
+from pylatex import LineBreak as lbr
 
 class Parts():
     def __init__(self, Monster, QuestBody, QuestModifiers, DifficultyModifiers):
@@ -68,6 +69,42 @@ class Parts():
             message+= "Severable Parts:\n"
             message += self.dualParse(self.Sever, self.PartNames['RemovablePartStringIds'],"LOC_REMOVABLE_PART_")
         return message
+    def latexStatus(self, doc):
+        tabula = table.Tabular("l r r r")
+        tabula.add_row(StatusData.Header())
+        tabula.add_hline
+        for status in [self.Poison, self.Sleep, self.Paralysis, self.Blast, self.KO, self.Exhaust, self.Mount]:
+            status.latex(tabula)
+        doc.append(tabula)
+    @staticmethod
+    def latexPart(part,partname):
+        tabula = table.Tabular("l")
+        tabula.add_row([partname])
+        tabula.add_row([round(part)])
+        return tabula
+    
+    def latexMonsterBlock(self,doc):
+        doc.append("HP Rolls: " + " - ".join(map(str,self.HealthVariance)))
+        doc.append(lbr())
+        doc.append("Base Size: %3d \t Size Table: %3d"%(int(self.BaseSize),self.SizeTable))
+        doc.append(lbr())
+        doc.append("Attack: %3d%% \t Player Damage Bonus: %3d%% \t Spawn Type: %2d"%(int(self.Attack),int(self.PlayerDamageMultiplier),int(self.SpawnType)))
+        doc.append(lbr())
+    def latex(self,doc):
+        with doc.create(Subsection(self.Tempering+self.name)):
+            self.latexMonsterBlock(doc)
+            self.latexStatus(doc)
+            with doc.create(Subsubsection("Breakable Parts")):
+                for part,name in zip(self.Parts, self.PartNames['PartStringIds']):
+                    doc.append(self.latexPart(part,name.replace("LOC_PART_","").replace("_"," ").title()))
+            if self.Sever:
+                if 'RemovablePartStringIds' not in self.PartNames or len(self.PartNames['RemovablePartStringIds'])!=len(self.Sever):
+                    self.PartNames['RemovablePartStringIds'] = ["Unk%d"%ix for ix in range(len(self.Sever))]
+                with doc.create(Subsubsection("Severable Parts")):
+                    for part,name in zip(self.Sever, self.PartNames['RemovablePartStringIds']):
+                        doc.append(self.latexPart(part,name.replace("LOC_REMOVABLE_PART_","").replace("_"," ").title()))
+                
+    
     @staticmethod
     def dualParse(parts,partnames,typing):
         message = ""
@@ -99,7 +136,7 @@ class Monster():
         self.partnames = self.partnamelib[self.hzv.name]
         self.status = self.eda[monsterID]
         self.questModifiers = QuestModifiers
-    
+
     def applyModifiers(self,DifficultyModifiers):
         QuestModifiers = self.questModifiers
         #Quest: Spawn, Tempered, HealthVariance, Size, RSiz Table

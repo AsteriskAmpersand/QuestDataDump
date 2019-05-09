@@ -14,6 +14,9 @@ from Chunk import chunkPath, tssTextPath
 from pathlib import Path
 import math
 
+from pylatex import Document, Section, Subsection, Command
+from pylatex.section import Chapter
+from pylatex import LineBreak as lbr
        
 timeOfDay = ["Current","Late Night", "Dawn", "Early Day", "Mid Day", "Late Day",
              "Dusk", "Early Night", "Midnight", "Freeze Time"]
@@ -242,7 +245,7 @@ class MIB():
                     ('-'*75+'\n').join([str(Monster.applyModifiers(self.Diff.mpMod(self.Tail.mpDiff))) for Monster in self.Monsters if Monster]) + "\n" +\
                     ('-'*75+'\n') + self.strREM()
     def strREM(self):
-        return '\n'.join([str(self.REM[rem]) for rem in self.Objective.REMID if rem != 0])
+        return '\n'.join([str(self.REM[rem]) if rem in self.REM else "Missing REM"  for rem in self.Objective.REMID if rem != 0])
     def strHeader(self):
         message = ""
         m = "Stage: %s"%self.Header.stage()
@@ -258,6 +261,15 @@ class MIB():
         m = m.ljust(35) + "Faint Count: %d"%self.Header.faints()
         message+=m+"\n"
         return message
+    def latex(self, doc):
+        [(doc.append(line), doc.append(lbr())) for line in self.strHeader().split('\n')]
+        with doc.create(Section("Single Player Monster Stats")):
+            [Monster.applyModifiers(self.Diff.spMod()).latex(doc) for Monster in self.Monsters if Monster]
+        with doc.create(Section("Multiplayer Monster Stats")):
+            [Monster.applyModifiers(self.Diff.mpMod(self.Tail.mpDiff)).latex(doc) for Monster in self.Monsters if Monster]
+        with doc.create(Section("Quest Rewards")):
+            [self.REM[rem].latex(doc) for rem in self.Objective.REMID if rem != 0]
+    
     def rank(self):
         if self.Header.rankRewards == 0:
             return "LR"
@@ -303,3 +315,9 @@ class MIBFile():
         message += str(self.mib)
         message += '\n\n'
         return message
+    
+    def latex(self, doc):
+        with doc.create(Chapter(str(self.name)+" (%d*)"%self.mib.Header.starRating, label = str(self.name).replace("&",""))):
+            doc.append("Quest File: "+str(self.path.stem))
+            doc.append(lbr())
+            self.mib.latex(doc)

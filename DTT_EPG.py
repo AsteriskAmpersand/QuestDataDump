@@ -27,7 +27,7 @@ class PartHzv (PyCStruct):
         return '|'.join([" %3d "%self.__getattribute__(hzv) for hzv in list(self.fields.keys())])
     @staticmethod
     def header():
-        return '|'.join(["Part#"," Unk "," Sig ","Sever", "Blunt","Shot ","Fire ", "Water"," Ice "," Thn ", " Dra ", "Stun ", " ES? "])
+        return '|'.join(["Part#"," Unk ","Sever", "Blunt","Shot ","Fire ", "Water"," Ice "," Thn ", " Dra ", "Stun ", " ES? "])
 
 class Header (PyCStruct):
 	fields = OrderedDict([
@@ -138,6 +138,17 @@ class EPG_File():
         return self.epg.Parts
     def Sever(self):
         return self.epg.CleaveZones
+    def __str__(self):
+        string = ""
+        string += ("Base HP: %d\n"%self.HP())
+        string += ("Hitzones:\n")
+        string += PartHzv.header()+"\n"
+        string += '\n'.join([str(part) for part in self.epg.Hitzones])
+        string += ("\nParts HP:\n")
+        string += '\n'.join([str(part) for part in self.Parts()])
+        string += ("\nCleave HP:\n")
+        string += '\n'.join([str(part) for part in self.Sever()])        
+        return string
             
 class EPG_Library():
     def __init__(self):

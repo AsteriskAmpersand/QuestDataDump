@@ -22,7 +22,7 @@ Lavasioth, 13
 Deviljho, 14
 Barroth, 15
 Uragaan, 16
-Unavailable, 17
+Leshen, 17
 Pukei, 18
 Nergigante, 19
 Xeno'Jiiva, 1A
@@ -50,7 +50,7 @@ Raphinos, 2F
 Shamos, 30
 Barnos, 31
 Girros, 32
-unknown, 33
+Ancient Leshen?, 33
 Gastodons, 34
 Noios, 35
 Magmacore, 36

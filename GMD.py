@@ -20,7 +20,7 @@ class GmdInfoEntry  (PyCStruct):
 
 class GmdString(PyCStruct):
     def __init__(self, count):
-        self.fields = {"string":"char[%d]"%(count)}
+        self.fields = {"string":"ubyte[%d]"%(count)}
         super().__init__()
     def __str__(self):
         return ''.join(self.string[:-1])
@@ -64,10 +64,10 @@ class Gmd  ():
         self.buckets.marshall(data)
         self.keyblock = GmdString(self.header.key_block_size)
         self.keyblock.marshall(data)
-        self.keyblock= self.keyblock.string.split('\x00')
+        self.keyblock= [bytestr.decode('utf-8') for bytestr in bytes(self.keyblock.string).split(b'\x00')]
         self.string_block = GmdString(self.header.string_block_size)
         self.string_block.marshall(data)
-        self.string_block = self.string_block.string.split('\x00')
+        self.string_block = [bytestr.decode('utf-8') for bytestr in bytes(self.string_block.string).split(b'\x00')]
         
         
     def serialize(self):
@@ -84,3 +84,29 @@ class GMDFile():
             self.gmd.marshall(file)
     def __getitem__(self, index):
         return self.gmd.string_block[index]
+
+if "__main__" in __name__:
+    from pathlib import Path
+    translations = []
+    languages = []
+    for path in list(Path(r"E:\MHW").rglob("q*_eng.gmd")):
+        if GMDFile(path)[0] != 'Invalid Message' and "NSND" not in GMDFile(path)[0]:
+            valid = []
+            validLang = []
+            for lang in ["eng","jpn","ara","chS","chT","fre","ger","ita","kor","pol","ptB","rus","spa"]:
+                try:
+                    title = GMDFile(Path(str(path).replace("_eng", "_"+lang)))[0] 
+                    valid.append(title)
+                    validLang.append(lang)
+                except:
+                    pass
+                translations.append(valid)
+                languages.append(validLang)
+    prexisting = set()
+    with open("G:\Wisdom\Translations.txt","w",encoding="utf-8") as outf:
+        for qlang, quest in zip(languages, translations):
+            if quest[0] not in prexisting:
+                prexisting.add(quest[0])
+                outf.write("-"*32+"\n")
+                for lang, title in zip(qlang,quest):
+                    outf.write("%s: %s\n"%(lang,title))

@@ -626,6 +626,40 @@
         "Gold": 1.23
       }
     },
+    "em127_01": {
+      "NameStringId": "LOC_MONSTER_LESHEN",
+      "PartStringIds": [
+        "LOC_PART_HEAD",
+        "LOC_PART_BODY",
+        "LOC_PART_ARMS",
+        "LOC_PART_LEGS",
+        "LOC_PART_CROW?"
+      ],
+      "BaseSize": 894.04,
+      "ScaleModifier": 0.9,
+      "Crowns": {
+        "Mini": 0.9,
+        "Silver": 1.15,
+        "Gold": 1.23
+      }
+    },
+    "em127(FakeFix)_01": {
+      "NameStringId": "LOC_MONSTER_LESHEN",
+      "PartStringIds": [
+        "LOC_PART_HEAD",
+        "LOC_PART_BODY",
+        "LOC_PART_ARMS",
+        "LOC_PART_LEGS",
+        "LOC_PART_CROW?"
+      ],
+      "BaseSize": 894.04,
+      "ScaleModifier": 0.9,
+      "Crowns": {
+        "Mini": 0.9,
+        "Silver": 1.15,
+        "Gold": 1.23
+      }
+    },
     "em045_00": {
       "NameStringId": "LOC_MONSTER_URAGAAN",
       "RemovablePartStringIds": [

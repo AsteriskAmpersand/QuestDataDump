@@ -8,6 +8,7 @@ from Cstruct import PyCStruct
 from collections import OrderedDict
 from Chunk import chunkPath
 from pathlib import Path
+import pylatex
 
 class StatusData():
     def __init__(self,base,buildup,maxv, name):
@@ -22,12 +23,19 @@ class StatusData():
                           self.Max * BaseMult,
                           self.Name)
 
+    def latex(self, table):
+        table.add_row([self.Name.ljust(10), int(self.Base), int(self.Buildup), int(self.Max)])
+
     def __str__(self):
         return "%s| %5d | %7d | %5d |\n"%(self.Name.ljust(10), int(self.Base), int(self.Buildup), int(self.Max))
     
     @staticmethod
     def strHeader():
         return "  Status  |  Base | BuildUp |  Cap  |\n"
+    @staticmethod
+    def Header():
+        return ["Status","Base","Build Up","Cap"]
+    
 
 class Header (PyCStruct):
 	fields = OrderedDict([
