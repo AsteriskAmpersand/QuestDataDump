@@ -20,7 +20,7 @@ class StatusData():
     def Modify(self, BaseMult, BuildupMult):
         return StatusData(self.Base * BaseMult, 
                           self.Buildup * BuildupMult, 
-                          self.Max * BaseMult,
+                          self.Max * BuildupMult,
                           self.Name)
 
     def latex(self, table):

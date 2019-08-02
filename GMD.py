@@ -84,7 +84,9 @@ class GMDFile():
             self.gmd.marshall(file)
     def __getitem__(self, index):
         return self.gmd.string_block[index]
-
+    def __iter__(self):
+        return iter(self.gmd.string_block)
+"""
 if "__main__" in __name__:
     from pathlib import Path
     translations = []
@@ -110,3 +112,14 @@ if "__main__" in __name__:
                 outf.write("-"*32+"\n")
                 for lang, title in zip(qlang,quest):
                     outf.write("%s: %s\n"%(lang,title))
+                    
+from pathlib import Path
+from GMD import GMDFile
+import json
+import codecs
+for gmd in Path(r"E:\MHW\Merged").rglob("*.gmd"):
+    gmdf = GMDFile(gmd)
+    gmdp = list(gmdf)
+    with codecs.open(gmd.with_suffix('.json'),"w",encoding = "utf-8") as out:
+        json.dump(gmdp,out, ensure_ascii=False)
+"""

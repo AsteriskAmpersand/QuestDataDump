@@ -287,7 +287,7 @@ def endianness_reversal(data):
     return b''.join(map(lambda x: x[::-1],chunks(data, 4)))
 
 def CapcomBlowfish(file):
-    cipher = Blowfish.new("TZNgJfzyD2WKiuV4SglmI6oN5jP2hhRJcBwzUooyfIUTM4ptDYGjuRTP", Blowfish.MODE_ECB)
+    cipher = Blowfish.new("TZNgJfzyD2WKiuV4SglmI6oN5jP2hhRJcBwzUooyfIUTM4ptDYGjuRTP".encode("utf-8"), Blowfish.MODE_ECB)
     return endianness_reversal(cipher.decrypt(endianness_reversal(file)))
 
 class MIBFile():

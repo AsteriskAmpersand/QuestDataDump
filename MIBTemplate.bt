@@ -2,115 +2,238 @@
 //--- 010 Editor v9.0 Binary Template
 //
 //      File: 
-//   Authors: 
+//   Authors: Nekotaga
 //   Version: 
-//   Purpose: 
+//   Purpose: Updating the previous MIB template which had a few flaws
 //  Category: 
-// File Mask: 
+// File Mask: *.mib
 //  ID Bytes: 
 //   History: 
+//      May 30, 2019 (Neko)
+//          - Updated a lot of unknowns and remodeled the template
+//          - Fixed some flaws on the template
+//
 //------------------------------------------------
-struct ObjectiveData{
-        ubyte objectiveID;
-        ubyte event;
-        ushort unkn11;
-        ushort objectiveID;
-        ushort objectiveAmount;
-    };
 
-struct MIBHeader{
-    uint16 mibSignature;
-    uint32 padding;
-    uint32 mibID;
-    ubyte starRating;
-    uint32 unkn1;
-    uint32 unkn2;
-    uint32 rankRewards;
-    uint32 mapID;
-    uint32 unkn4;
-    uint32 playerSpawn;
-    uint32 binaryMapToggle;
-    uint32 dayNightControl;
-    uint32 weatherControl;
-    uint32 unkn5;
-    uint32 zennyReward;
-    uint32 faintPenalty;
-    uint32 unkn7;
-    uint32 questTimer;
-    ubyte unkn9;
-    ushort monsterIconId[5];
-    ubyte hrRestriction;
-    uint32 unkn10;   
-};
+//------------------------------------------------
+// Header
+typedef struct{
+    uint32  fType<name="File type">;
+    ushort  padding<hidden = true>;
+    uint32  mibID<name=".mib ID">;
+    ubyte   questStars<name="Stars">; // 0 makes the quest invisible
+    uint32  unkn0<bgcolor=0xffffff>;
+    uint32  unkn1<bgcolor=0xffffff>;
+    uint32  questRank<name="Low / High rank">;
+            // 0 - Low rank
+            // 1 - High rank
+    uint32  mapID<name="Map ID">;
+    uint32  playerSpawn<name="Player spawn">;
+            // 0 - Camp 1 
+            // 1 - Choose spawn but wingdrake RNG
+            // 2 - Choose spawn
+    uint32  fixedSpawnSetter<name="Fixed spawn">;   // If setted to 1, its not fixed
+    uint32  binaryMapToggle<bgcolor=0x000000>;  // An indicator for some quests
+            // 0 - Off 
+            // 2 - On
+    uint32  dayNightCicle<name="Day / Night cicle">;
+            // 0 - Match universal
+            // 1 - Start late in the night
+            // 2 - Start at dawn
+            // 3 - Start early in the day
+            // 4 - Start at noon
+            // 5 - Start late in the day
+            // 6 - Start at dusk
+            // 7 - Start early in the night
+            // 8 - Start at midnight
+            // 9 - Pause day/night cicle once the quest has been initiated
+    uint32  weather<name="Weather conditions">;
+            // 0 - Random
+            // 1 - Disable weather
+            // 2 - Weather type A
+            // 3 - Weather type B
+    uint32  unkn3_MP_modifier_Asterisk<bgcolor=0x000000>;
+    uint32  objReward<name="Main objective's zenny reward">;
+    uint32  faintPenalty<name="Faint penalty">; // Number of deaths is how
+                                // many times it takes for this variable
+                                // to make the zenny reward go down to 0
+    uint32  subObjReward<name="Subobjective's zenny reward">;
+    uint32  questTimer<name="Quest timer (minutes)">;
+    ubyte   unkn4<bgcolor=0xffffff>;
+    ushort  emIconID[5]<name="Large monster icon ID">;  // 127 means no icon
+    ubyte   hrRestriction<name="HR Restriction">;
+    uint32  unkn6<bgcolor=0xffffff>;
+} Header;
 
-struct MIBObjective{
-    ObjectiveData objectiveData[2];
-    ubyte subobjectivesRequired;
-    ObjectiveData subObjective[2];
-    uint32 unkn11;
-    uint32 unkn12;
-    uint32 highlightedUnknown2;
-    ubyte questType;
-    ubyte questTypeIcon;
-    ubyte ATFlag; //02 enables AT global modifier
-    ubyte unkn14;
-    uint32 REMID1;
-    uint32 REMID2;
-    uint32 REMID3; //needs verification
-    uint32 SUPPID1;
-    uint32 unkn15; //SUPPID2?
-    uint32 unkn16; //SUPPID3?
-    uint32 unkn17;
-    uint32 EXP;
-    uint32 unkn18;
-    uint32 unkn19;
-};
+//------------------------------------------------
+// Objective data
+typedef struct{
+    ubyte   objTypeID<name="Objective type ID">;
+            // 00 hex - None
+            // 01 hex - Multi monster quest
+            // 02 hex - Recolect
+            // 11 hex - Capture
+            // 21 hex - Slay
+            // 31 hex - Hunt
+    ubyte   multiMonsterFlag<name="Multi monster flag (00/04)">;    // Objective struct 1 4 0 0 x
+            // 0 - Off
+            // 4 - On
+    ushort  unkn0<bgcolor=0xffffff>;  // Seems to always be 0
+    ushort  objID<name="Objective ID">;
+    ushort  objCount<name="Objective count">;
+} ObjectiveData;
 
-struct Monster{
-    uint32 monsterID;
-    uint32 spawnID;
-    uint32 unknown1;
-    ubyte temperedFlag;
-    uint32 monsterHealth;
-    uint32 monsterDamage;
-    uint32 playerDamage;
-    uint32 HealthAndDamageVariance; //Damage needs confirmation, but makes sense
-    uint32 size;
-    uint32 sizeVariation; //need confirmation
-    uint32 unknown2;
-    uint32 partHP;
-    uint32 statusBase;
-    uint32 statusBuildUp;
-    uint32 stun;
-    uint32 exhaust;
-    uint32 mount;
-};
+//------------------------------------------------
+// Objectives
+typedef struct{
+    ObjectiveData obj1<name="Main objective 1">;
+    ObjectiveData obj2<name="Main objective 2">;
+    ubyte objsRequired<name="Main objectives Required">;
+    ObjectiveData subobj1<name="Subobjective 1">;
+    ObjectiveData subobj2<name="Subobjective 2">;
+    uint32  unkn0<bgcolor=0xffffff>;
+    uint32  music<name="Background music">;
+            // 00 hex - Default
+            // 01 / 02 / 04 / 05 / 06 / 07 / 08 / 09 / 1a hex - Default aparently
+            // 03 hex - Khezu theme (Khezu in iceborne confirmed(?))
+            // 15 hex - Megaman event (A Rush of Blood)
+            // 18 hex - DMC event (Code: Red)
+    ushort  highlightedUnkn1<bgcolor=0xffffff>;
+    ushort  unkn2<bgcolor=0xffffff>;
+    ubyte   questType<name="Quest type">;
+            // 01 hex - Hunting quest (Table spawn)
+            // 02 hex - Slaying quest (Table spawn)
+            // 04 hex - Capture quest (Table spawn)
+            // 08 hex - Delivery quest (Table spawn)
+            // 10 hex - Hunting quest (Sequential spawn)
+            // 20 hex - Special quest (Table spawn)
+    ubyte   questTypeIcon<name="Inquest icon">;
+    ubyte   ATFlag<name="AT flag">;
+    ubyte   unkn3<bgcolor=0xffffff>;    // 0 in most quests and 2 in some like FF kulu, leshen, zorah or luna's special assignment
+    uint32  remID1<name="Main objective .rem ID">;
+    uint32  remID2<name="Subobjective 1 .rem ID">;
+    uint32  remID3<name="Subobjective 2 .rem ID">;
+    uint32  SUPPID1<name=".supp ID">;
+    uint32  unkn4<bgcolor=0xffffff>;
+    uint32  unkn5<bgcolor=0xffffff>;
+    uint32  unkn6<bgcolor=0xffffff>;
+    uint32  hrReward<name="HR points reward">;
+    uint32  unkn7<bgcolor=0xffffff>;
+    uint32  unkn8<bgcolor=0xffffff>;
+} Objectives;
 
-struct MIBTail{
-    uint32 unk0;
-    uint32 unk1;
-    uint32 unk2;
-    uint32 unk3;
-    ubyte  unk4;
-    uint32 mpDifficultyModifier;
-    uint32 unk6;
-    uint32 unk7;
-    uint32 spawnRules[4];
-    uint32 spawnHP;
-    uint32 spawnChance0;
-    uint32 spawnTimer;
-    uint32 spawnChanceRest[6];
-    uint32 unkn22[50];
-    uint32 showSmallMonIcon[5];
-    uint32 smallMonIconID[5];
-    uint32 arenaSetId;
-    uint32 playerCountRestriction;
-    uint32 unkn23;
-    uint32 fenceControl;
-    uint32 unkn24[11];
-};
+//------------------------------------------------
+// Large monsters
+typedef struct{
+    uint32  monsterID<bgcolor=0x000ff,name="Monster ID">;
+    uint32  spawnID<name=".sobj ID">;
+    uint32  unkn0<bgcolor=0x000000>;    // Seems to be tied to some scripted quests
+    ubyte   tempFlag<name="Tempered flag">;
+    uint32  hp<name="Monster health">;
+    uint32  atk<name="Monster attack">;
+    uint32  plDmg<name="Player atk modifier (defense)">;
+    uint32  HealthAndDamageVariance<name="HP/Atk Roll">;    // This probably follows a table like size
+    uint32  size<name="Size">;
+    uint32  sizeTable<name="Size table">;
+    uint32  unkn1Always0<bgcolor=0x000000>; // Maybe a monster repopulation setting
+    uint32  partHP<name="Part HP">;
+    uint32  statusBase<name="Base status">;
+    uint32  statusBuildUp<name="Status buildup">;
+    uint32  stun<name="Base stun">;
+    uint32  exhaust<name="Base exhaust">;
+    uint32  mount<name="Base mount">;
+} EM;
 
-MIBHeader Header;
-MIBObjective Objectives;
-Monster Monsters[7];
-MIBTail SpawnData;
+//------------------------------------------------
+// Small monsters
+typedef struct{
+    uint32  spawnID<name=".sobj ID">;
+    uint32  hp<name="Monster health">;
+    uint32  unkn0<bgcolor=0xffffff/*,name="Monster attack"*/>;
+    uint32  unkn1<bgcolor=0xffffff/*,name="Stun/Status/PartHP/PlayerAtk"*/>;
+    byte    unkn2<bgcolor=0xffffff>;
+    uint32  unkn3<bgcolor=0xffffff>;
+    uint32  unkn3<bgcolor=0xffffff>;
+} EMs;
+
+//------------------------------------------------
+// Monster data
+typedef struct{
+    local int i<hidden=true>;
+    for (i=0; i<7; i++){
+        if (i%2 == 0){
+            EM  em<bgcolor=0x00ff00,name="Large monster">;
+        }else{
+            EM  em<bgcolor=0x00ffff,name="Large monster">;
+        }
+    }
+    EMs ems<bgcolor=0xffff00,name="Small monsters">;
+} MonsterData;
+
+//------------------------------------------------
+// Spawn data
+typedef struct{
+    uint32  secSpawnRule[5]<name="Sequential spawn rules">;
+            // 0 - Force spawn
+            // 1 - ?
+            // 2 - ?
+            // 3 - Spawn if the map is empty
+            // 4 - ?
+            // 5 - Retarded spawn
+            // 6 - Block spawn
+    uint32  spawnPercEM6<name="Monster 6 spawn decider">;   // These 2 deciders have to make
+    uint32  spawnGlobalDelay<name="Global monster delay">;  // a 100%. They decide which monster
+    uint32  spawnPercEM7<name="Monster 7 spawn decider">;   // from table 2 is going to take the
+                                                            // chance to spawn in the map.
+
+    uint32  spawnChance3<name="Spawn chance monster 3">;    // Table 1. These make a 100%
+    uint32  spawnChance4<name="Spawn chance monster 4">;    // and the ones that spawns
+    uint32  spawnChance5<name="Spawn chance monster 5">;    // fill any empty slots.
+    
+    uint32  spawnChance6<name="Spawn chance monster 6">;    // Table 2. These dont have to make a 100%.
+    uint32  spawnChance7<name="Spawn chance monster 7">;    // They decide the chance for each of them
+                                                            // to spawn after the global monster spawn
+                                                            // delay. If the map is full, the spawned
+                                                            // monster replaces a random one from table 1.
+} SpawnData;
+
+//------------------------------------------------
+// Icon data
+typedef struct{
+    uint32  mapIcon[51]<bgcolor=0x000000,name="Map icon">;
+    uint32  emsIconFlag[5]<name="Small monster icon flag">;
+    uint32  emsIconID[5]<name="Small monster icon ID">;
+} IconData;
+
+//------------------------------------------------
+// Arena
+typedef struct{
+    uint32  arenaSetId<name="Arena set ID">;
+    uint32  playerRestriction<name="Max players">;
+    uint32  arenaRankA<name="Arena rank A timer (seconds)">;
+    uint32  arenaRankB<name="Arena rank B timer (seconds)">;
+    uint32  arenaRankC<name="Arena rank C timer (seconds)">;
+    uint32  unkn0<bgcolor=0xffffff>;
+    uint32  unkn1<bgcolor=0xffffff>;
+    uint32  unkn2<bgcolor=0xffffff>;
+    ubyte   arenaFenceFlag<name="Arena fence switch (00/80)">;
+            // 00 hex - Not available
+            // 80 hex - Available
+    ubyte   unkn3_Pandora_1<bgcolor=0xffffff>;
+    ushort  unkn4_Pandora_1<bgcolor=0xffffff>;
+    uint32  unkn5<bgcolor=0xffffff>;
+    uint32  fenceCooldown<name="Arena fence cooldown">;
+    uint32  fenceUptime<name="Arena fence uptime">;
+    uint32  unkn6<bgcolor=0xffffff>;
+    uint32  unkn7<bgcolor=0xffffff>;
+    uint32  unkn8<bgcolor=0xffffff>;
+} ArenaData;
+
+//------------------------------------------------
+// Display
+Header header<bgcolor=0xff0000,name="Header"/*,read=ReadHeader*/>;
+Objectives objectives<bgcolor=0xff00ff,name="Objectives"/*,read=ReadObjectives*/>;
+MonsterData monsterData<name="Monster data"/*,read=ReadMonsterData*/>;
+SpawnData spawnData<bgcolor=0xff00ff,name="Spawn data"/*,read=ReadSpawnData*/>;
+IconData iconData<bgcolor=0xff0000/*,name="Icon data"*/>;
+ArenaData arenaData<bgcolor=0x0000ff,name="Arena data"/*,read=ReadArenaData*/>;
