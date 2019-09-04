@@ -147,6 +147,7 @@ class Monster():
         
     def __bool__(self):
         return self.name != "Empty"
+
         
 """
 		("spawnID","uint32"),

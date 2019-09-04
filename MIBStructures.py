@@ -234,7 +234,8 @@ class MIB():
         self.Header.marshall(data)
         self.Objective.marshall(data)
         [m.marshall(data) for m in self.Monsters]#TODO - missing converting each MIB monster to a pureMonster
-        self.Monsters = [m.toMonster(self.Objective.ATFlag) for m in self.Monsters if m]
+        self.binaryMonsters = [m for m in self.Monsters if m]
+        self.Monsters = [m.toMonster(self.Objective.ATFlag) for m in self.binaryMonsters]
         self.Tail.marshall(data)
         
     def __str__(self):
@@ -321,3 +322,13 @@ class MIBFile():
             doc.append("Quest File: "+str(self.path.stem))
             doc.append(lbr())
             self.mib.latex(doc)
+            
+    def hexPrint(self):
+        message = ("="*80+"\n")*2 +\
+            str(self.path.stem)+"\n" +\
+            (self.name + " (%d *) "%self.mib.Header.starRating).ljust(70)  + ("*"*self.mib.Header.starRating).rjust(10) + "\n" +\
+            ("="*80+"\n")*2
+        for monster, binmonster in zip(self.mib.Monsters,self.mib.binaryMonsters):
+            message += monster.name + " : " + ' '.join(map(lambda x: hex(x)[2:].zfill(2), binmonster.serialize())) + "\n"
+        message += '\n\n'
+        return message
