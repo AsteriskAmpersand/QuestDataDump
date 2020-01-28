@@ -1,0 +1,142 @@
+//------------------------------------------------
+//--- 010 Editor v9.0.2 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+ {
+    byte IB[4];
+    uint32  fileID<name="File ID">;
+    uint32  monsterID<name="Monster ID">;
+    char    version[4]<name="File version">;
+}Header;
+
+
+typedef struct
+{
+ uint32 base <name="Base Value">;
+ uint32 buildup <name="Buildup Value">;
+ uint32 max <name="Max Value">;
+ float draintime <name="Time to Drain Value">;
+ uint32 drainval <name="Value to Drain">;
+ float dur <name="Effect Duration">;
+ float durdec <name="Duration Decrease Per Instance">;
+ float durdeclimit <name="Minimum Duration">;
+
+}StatusP;
+
+
+typedef struct
+{
+ StatusP status;
+ int32 poisdam;
+ float poisinterv;
+}Poison;
+
+typedef struct
+{
+ StatusP exh;
+ int32 unkn0; 
+ float stamdam;
+}Exhaust;
+
+typedef struct
+{
+ StatusP blast;
+ int32 blastdam;
+}Blast;
+
+typedef struct
+{
+ StatusP tranq;
+ int32 cap0 <name="LR/HR Cap Threshold">;
+ int32 cap1 <name="MR Cap Threshold">;
+}Tranq;
+
+typedef struct
+{
+ StatusP mountkd;
+ int32 unkn0;
+}MountKD;
+typedef struct
+{
+ int32 unkn0;
+ int32 unkn1[8];
+ float unkn2[8];
+}UnknS0;
+
+
+
+typedef struct
+{
+ StatusP dung;
+ int32 unkn0;
+ float unkn2;
+}Dung;
+
+typedef struct
+{
+ StatusP unkn0;
+ int32 unkn1;
+ float unkn2;
+}UnknS1;
+
+
+typedef struct
+{
+ StatusP eldseal;
+ int32 aura;
+}Elder;
+
+Header head;
+
+Poison pois <bgcolor=0xFF00FF>;
+StatusP sleep <bgcolor=0xFFFF00>;
+StatusP para <bgcolor=0x00FFFF>;
+StatusP stun <bgcolor=0x63AECE>;
+Exhaust exhaust <bgcolor=0xFF8800>;
+StatusP mount <bgcolor=0x880088>;
+Blast blast <bgcolor=0x638FFF>;
+Tranq tranq <bgcolor=0x0000FF>;
+StatusP flash <bgcolor=0xFFFFFF>;
+UnknS0 unkns ;
+MountKD mountkd <bgcolor=0xFF0088>;
+Dung dung <bgcolor=0x638ECE>;
+StatusP shocktrap <bgcolor=0x00FFFF>;
+StatusP pitfalltrap <bgcolor=0x00FF00>;
+StatusP vinetrap <bgcolor=0x109347>;
+UnknS1 unkns2 <bgcolor=0x000000>;
+Elder seal <bgcolor=0x000088>;
+StatusP  unkns3 <bgcolor=0x000000>;
+StatusP  unkns4 ;
+
+typedef struct
+{
+ int32 unkn0;
+ int32 unkn1;
+ int32 unkn2;
+}UnknS3;
+
+UnknS3 unknstruct[6];
+int32 unkn4[8];
+float unkn5[5];
+int32 unkn6;
+int32 unkn7;
+int32 unkn8;
+
+int32 unkn9;
+int32 unkn10;
+int32 unkn11;
+int32 unkn12;
+int32 unkn13;
+int32 unkn14;
+int32 unkn15;
+int32 unkn16;

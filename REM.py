@@ -14,6 +14,7 @@ import pylatex
 class REM(PyCStruct):
     
     fields = OrderedDict([
+        ("ibbytes", "uint32"),#
     	("signature", "uint32"),#
 		("signatureExtension", "short"),#
 		("remID", "uint32"),#

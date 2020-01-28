@@ -44,116 +44,92 @@ class Header (PyCStruct):
 		("magic", "char[4]"),#
 ]);
 
+StatusP = [        
+		("%sBase", "uint32"),#
+		("%sBuildup", "uint32"),#
+		("%sMax", "uint32"),#
+		("%sDrainTimer", "float"),# 
+		("%sDrainVal", "uint32"),#
+		("%sStatingDuration", "float"),#
+		("%sDurationDecrease", "float"),#
+        ("%sMinimumDuration", "float"),#
+        ]
+def expandStatusP(string):
+    return [(i[0]%string,i[1]) for i in StatusP]
+
+Poison = [
+        *expandStatusP("poison"),
+		("poisonDamage", "uint32"),#
+		("poisonInterval", "float"),#
+        ]
+Sleep = expandStatusP("sleep")
+Paralysis = expandStatusP("para")
+KO = expandStatusP("ko")
+Exhaust = [
+        *expandStatusP("exhaust"),
+		("exhaustUnkn", "uint32"),#
+		("staminaDamage", "float"),#
+        ]
+Blast = [
+        *expandStatusP("blast"),
+		("blastDamage", "uint32"),#
+        ]
+Tranq = [
+        *expandStatusP("exhaust"),
+		("exhaustUnkn", "uint32"),#
+		("capThreshold", "int32[2]"),#
+        ]
+Flash = expandStatusP("flash")
+UnknS0 = [
+        ("unknS0_0", "int32"),#
+		("unknS0_1", "int32[8]"),#
+        ("unknS0_2", "float[8]"),#
+        ]
+Mount = [
+        *expandStatusP("mount"),
+        ("mountUnknown", "int32"),#
+        ]
+Dung = [
+        *expandStatusP("dung"),
+        ("dungUnknown", "int32"),#
+        ("dungUnknownFloat", "float"),#
+        ]
+Shocktrap = expandStatusP("shocktrap")
+Pitfalltrap = expandStatusP("pitfalltrap")
+Vinetrap = expandStatusP("vinetrap")
+UnknS1 = [
+        *expandStatusP("unkns1"),
+        ("unkns1Unknown", "int32"),#
+        ("unkns1UnknownFloat", "float"),#
+        ]
+Elderseal = [
+        *expandStatusP("elderseal"),
+        ("aura","int32")
+        ]
+UnknS2 = expandStatusP("unkns2")
+UnknS3 = expandStatusP("unkns3")
+   
 class Status (PyCStruct):
 	fields = OrderedDict([
-		("poisonBase", "uint32"),#
-		("poisonBuildup", "uint32"),#
-		("poisonMax", "uint32"),#
-		("poisonTimer1", "float"),#
-		("poisonTimer2", "uint32"),#
-		("poisonDuration", "float"),#
-		("padding0", "uint64"),#
-		("poisonDamageX2", "uint32"),#
-		("poisonInterval", "float"),#
-        
-		("sleepBase", "uint32"),#
-		("sleepBuildup", "uint32"),#
-		("sleepMax", "uint32"),#
-		("sleepTimer1", "float"),# 
-		("sleepTimer2", "uint32"),#
-		("sleepDuration", "float"),#
-		("padding1", "uint64"),#
-        
-		("paraBase", "uint32"),#
-		("paraBuildup", "uint32"),#
-		("paraMax", "uint32"),#
-		("paraTimer1", "float"),#
-		("paraTimer2", "uint32"),#
-		("paraDuration", "float"),#
-		("padding2", "uint64"),#
-        
-		("koBase", "uint32"),#
-		("koBuildup", "uint32"),#
-		("koMax", "uint32"),#
-		("koTimer1", "float"),#
-		("koTimer2", "uint32"),#
-		("koDuration", "float"),#
-		("padding3", "uint64"),#
-        
-		("exhaustBase", "uint32"),# //225
-		("exhaustBuildup", "uint32"),# //75
-		("exhaustMax", "uint32"),# //900
-		("exhaustTimer1", "float"),# //10
-		("exhaustTimer2", "uint32"),# //5
-		("unknown1 ", "uint32[4]"),#
-		("unk2a", "float"),# //150
-		("mountBase", "uint32"),# //40
-		("mountBuildup", "uint32"),#  //70
-		("mountMax", "uint32"),# //460
-		("unknown2 ", "uint32[5]"),#
-        
-		("blastBase", "uint32"),#
-		("blastBuildup", "uint32"),#
-		("blastMax", "uint32"),#
-		("unknown3 ", "uint32[5]"),#
-
-		("unk3a", "uint32"),# //100
-		("unk3b", "uint32"),# //150
-		("unk3c", "uint32"),# //200
-		("unk3d", "uint32"),# //300
-		("unk3Timer1", "float"),# //5
-		("unk3Timer2", "uint32"),# //5
-		("unknown4 ", "uint32[3]"),#
-		("unk33", "uint32"),# //30
-		("unk34", "uint32"),# //1
-		("unknown5 ", "uint32[4]"),#
-		("unk4a", "float"),# //20
-		("unk4b", "float"),# //4
-		("unk4c", "float"),#  //5
-		("unk4d", "uint32"),# //100
-		("unk4e", "uint32"),# //100
-		("unk4f", "uint32"),# //1000
-		("unknown6 ", "uint32[5]"),#
-		("unk5a", "uint32"),#   //100 
-		("unk5b", "uint32"),# //1
-		("unknown7 ", "uint32[4]"),#
-		("unk6a", "float"),# //30
-		("unk6b", "uint32"),#
-		("unk6c", "uint32"),#
-		("unk6d", "uint32"),# //50
-		("unk6e", "float"),# //5
-		("unk7a", "float"),#
-		("unk7b", "uint32"),#
-		("unk7c", "uint32"),#
-		("unk7d", "uint32"),#
-		("unk7e", "float"),#
-		("unk8a", "float"),# //8
-		("unk8b", "float"),# //2
-		("unk8c", "float"),# //2
-		("unk8d", "uint32"),#
-		("unk8e", "uint32"),#
-		("unk8Timer1", "float"),#
-		("unk8Timer2", "uint32"),#
-		("unk8f", "uint32"),#
-		("unk8g", "float"),# //10
-		("unk8h", "float"),# //2
-		("unk8i", "float"),# //2
-		("unknown8 ", "uint32[5]"),#
-		("unk9a", "float"),#  //8
-		("unk9b", "float"),#
-		("unknown9 ", "uint32[4]"),#
-		("unka", "float"),# //1
-		("unknowna ", "uint32[9]"),#
-		("unkbTimer1", "float"),#
-		("unkbTimer2", "uint32"),#
-		("unkba", "uint32"),#
-		("unkbb", "uint32"),#
-		("unkbc", "uint32"),#
-		("unkbd", "uint32"),#  //20
-		("unknownb ", "uint32[5]"),#
-		("unkc", "float"),# //30
-		("unknownc ", "uint32[2]"),#
-
+            *Poison,
+            *Sleep,
+            *Paralysis,
+            *KO,
+            *Exhaust,
+            *Mount,
+            *Blast,
+            *Tranq,
+            *Flash,
+            *UnknS0,
+            *Mount,
+            *Dung,
+            *Shocktrap,
+            *Pitfalltrap,
+            *Vinetrap,
+            *UnknS1,
+            *Elderseal,
+            *UnknS2,
+            *UnknS3
 ]);
 
 class EDA():

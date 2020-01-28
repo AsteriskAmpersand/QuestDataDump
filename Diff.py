@@ -14,14 +14,8 @@ class Header (PyCStruct):
 		("FileID", "uint32"),#
  ]);
 
-class monCount (PyCStruct):
-	fields = OrderedDict([
-		("stringCount", "uint32"),#
-    ])
-
 class values(PyCStruct):
     fields = OrderedDict([
-		("valueCount", "uint32"),#
 		("monHPMultiplier", "float"),#
 		("monDmgMultiplier", "float"),#
 		("playerDmgMultiplier", "float"),#
@@ -41,25 +35,28 @@ class values(PyCStruct):
             result.__setattr__(field,self.__getattribute__(field)*value.__getattribute__(field))
         return result
 
+class unknTrail(PyCStruct):
+    fields = OrderedDict([
+		("unknownData", "int32[7]"),#
+    ])
 class Difficulty():
     def __init__(self):
         self.DifficultyHeader=Header()
-        self.SoloCount=monCount()
-        self.soloMultipliers= [values() for _ in range(100)]
-        self.MultiCount=monCount()
-        self.mpMultipliers=[values() for _ in range(100)]
+        self.soloMultipliers= [values() for _ in range(1000)]
+        self.mpMultipliers=[values() for _ in range(1000)]
+        self.unknTrail = unknTrail()
     def marshall(self,data):
         self.DifficultyHeader.marshall(data)
-        self.SoloCount.marshall(data)
         [solo.marshall(data) for solo in self.soloMultipliers]
-        self.MultiCount.marshall(data)
         [mult.marshall(data) for mult in self.mpMultipliers]
-    def serialize(self,data):
-        self.DifficultyHeader.serialize()
-        self.SoloCount.serialize()
-        [solo.serialize() for solo in self.soloMultipliers]
-        self.MultiCount.serialize()
-        [mult.serialize() for mult in self.mpMultipliers]
+        self.unknTrail.marshall(data)
+    def serialize(self):
+        result = self.DifficultyHeader.serialize()
+        result+=b''.join([solo.serialize() for solo in self.soloMultipliers])
+        result+=b''.join([mult.serialize() for mult in self.mpMultipliers])
+        result+= self.unknTrail.serialize()
+        return result
+        
 
 class DifficultyFile():
     difficultyPath = r"%s\common\em\em_difficulty.dtt_dif"%chunkPath

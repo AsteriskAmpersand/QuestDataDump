@@ -1,0 +1,190 @@
+//------------------------------------------------
+//--- 010 Editor v9.0 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+//Edited from Asterisk's base, my changes may or may not be accurate
+#include "Personal/enums.bt"
+
+
+typedef enum <int32>
+{
+ Red,
+ White,
+ Orange,
+ Green
+}Kinsect;
+
+byte IB[4];
+
+typedef struct
+   {
+    int32 filetype;
+    MONSTERID32 ingameID <name="Monster ID">;
+    int32 section;
+    int32 baseHP <name="Monster Base HP">;    
+   }Header;
+
+//Parts---------------------------------------------------------------------------------------------------------------------------------------------
+
+
+typedef struct
+{
+   int32 base <name="Base HZV">;//00 00 00 00 
+   int32 broken  <name="HZV After Break">;//FF FF FF FF 
+   int32 spec0 <name="Special HZV 1">;//FF FF FF FF  White Spike Nergi, Molten for Kulve
+   int32 spec1 <name="Special HZV 2">;//FF FF FF FF  Black Spike Nergi,
+   int32 spec2 <name="Special HZV 3">;//FF FF FF FF  "Gloss Black" Spike Nergi
+
+}RankParts;
+
+
+
+typedef struct
+ {
+  RankParts  high <name="Set 1", read=ReadStruct>; //Base Monsters LR/HR New Monster MR
+  RankParts  mast <name="Set 2", read=ReadStruct>; //Base Monster MR
+ }Subpart;
+
+typedef struct
+ {
+  int32 flinchValue <name="Damage To Flinch">;//2C 01 00 00 
+  int32 cleavl0 <name="Special Part Link 1">;//Points to Nergi Spikes 
+  int32 cleavl1 <name="Special Part Link 2">;//Points to Nergi Horns/Tail
+  int32 unnk0;
+  Kinsect extr <name="Kinsect Extract">;
+  int32 sPartCount <name="Sub Part Count">;//01 00 00 00 
+  if(sPartCount!=1)
+   {
+    Subpart part[sPartCount]<name="Sub Part Hitzone Links",optimize=false>;
+   }
+  else
+   {
+    Subpart part <name="Hitzone Links">;
+   }
+  int32 unkn11;//00 00 00 00 Regrowth plates
+  int32 unkn12;//00 00 00 00 White Spikes
+  int32 unkn13;//00 00 00 00   
+  byte unkn18;
+  byte unkn19;
+ }PartHP;
+
+typedef struct
+{
+ int32 partCount <name="Part Count">;
+ PartHP partsHP[partCount]<name="Part Details",optimize=false>;
+}Parts;
+
+//Hitzones---------------------------------------------------------------------------------------------------------------------------------
+typedef struct
+   {
+    float Timer <name="Timer">;    //Time Until Hitzone Change, next zone logic unsure
+    int32 Sever   <name="Sever">;   //0A 00 00 00 
+    int32 Blunt   <name="Blunt">;   //4B 00 00 00 
+    int32 Shot    <name="Shot">;    //46 00 00 00 
+    int32 Fire    <name="Fire">;    //37 00 00 00 
+    int32 Water   <name="Water">;   //00 00 00 00 
+    int32 Ice     <name="Ice">;     //0A 00 00 00 
+    int32 Thunder <name="Thunder">; //0F 00 00 00 
+    int32 Dragon  <name="Dragon">;  //14 00 00 00 
+    int32 Stun    <name="Stun">;    //0F 00 00 00 
+    int32 Mount <name="Mount">;
+   }PartHzv;
+
+
+typedef struct
+  {
+    int32 hzCount<name="Hitzone Count">;
+    PartHzv partsHzv[hzCount]<name="Hitzone Values",read=ReadHZV1,optimize=false>;    
+  }Hitzones;
+
+
+//Special Parts-------------------------------------------------------------------------------------------------------------------------------------------
+typedef byte bool;
+typedef struct
+   {
+    ATKtype damageType <name="Damage Type Required">; //0-Any 1-Sever 2-Blunt 3-Shot
+    int32 unkn1;
+    int32 unkn2;
+    int32 specialHP <name="Special Part HP">;
+    int32 unkn4; //All Tails use 1 as their value (some other parts use 1 aswell not explicit type)
+    bool Specialunkn <name="Special Requirement?">; //Set to 0 makes Kulve Horns affected by PB and Nergi tail set to 1 requires spikes to be cut - On Nergi Spikes compared against a 0 byte every hit to body part tied to
+    bool BluntMaybe; // On nergi spikes compared against 0 byte every time spikes take damage WHILE ACTIVE
+    bool ShotMaybe;    
+   }SpecialPData;//23bytes
+
+typedef struct
+   {
+    int32 specialCount<name="Special Part Count">;
+    SpecialPData specialPart[specialCount]<name="Special Part",optimize=false>;    
+   
+   }SpecialZones;
+
+//UnknStruct-------------------------------------------------------------------------------------------------------------------------------------------
+typedef struct
+{
+ int32 unkn0;
+ int32 unkn1;
+ int32 unkn2;
+ byte unkn9;
+ int32 unkn3;
+ byte unkn4;
+ byte unkn5;
+ int32 unkn6;
+ byte unkn7;
+ byte unkn8;
+ byte unkn10;
+}UnkZone;
+
+
+//For reading various things mainly for testing purposes
+string ReadStruct(RankParts& e)
+{
+ string s;
+ SPrintf(s, "Base=%d  Broken=%d  Specials|  %d, %d, %d", e.base, e.broken, e.spec0, e.spec1, e.spec2);
+ return s;
+}
+
+string ReadHZV0(PartHzv& e)
+{
+ string s;
+ SPrintf(s, "Timer=%f", e.Timer);
+ return s;
+}
+
+string ReadHZV1(PartHzv& e)
+{
+ string s;
+ SPrintf(s, "Raw  %d %d %d     Ele  %d %d %d %d %d", e.Sever, e.Blunt, e.Shot, e.Fire, e.Water, e.Ice, e.Thunder, e.Dragon);
+ return s;
+}
+
+string ReadHZV2(PartHzv& e)
+{
+ string s;
+ SPrintf(s, "Sev=%d B=%d Sh=%d F=%d W=%d I=%d T=%d D=%d", e.Sever, e.Blunt, e.Shot, e.Fire, e.Water, e.Ice, e.Thunder, e.Dragon);
+ return s;
+}
+
+string ReadHZV3(PartHzv& e)
+{
+ string s;
+ SPrintf(s, "Mount=%d", e.Mount);
+ return s;
+}
+
+//Final Calls-----------------------------------------------------------------
+Header header<name="Header",bgcolor=0x638ece>;
+Parts parts<name="Parts",bgcolor=0x109347>;
+Hitzones hzvs <name="Hitzones",bgcolor=0xa85098>;
+SpecialZones specialparts<name="Special Parts",bgcolor=0x090909>;
+int32 cnt <name="Unkn Struct Count">;
+UnkZone unkn[cnt]<bgcolor=0xFFFFFF>;
+int32 unknthing;

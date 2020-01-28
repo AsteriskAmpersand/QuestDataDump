@@ -8,26 +8,7 @@ from Cstruct import Mod3Container, PyCStruct
 from collections import OrderedDict
 from Chunk import chunkPath
 from pathlib import Path
-class PartHzv (PyCStruct):
-    fields = OrderedDict([
-		("unk0", "int32"),#    //00 00 00 00
-		("Header", "int32"),#  //0A 00 00 00 
-		("Sever", "int32"),#   //0A 00 00 00 
-		("Blunt", "int32"),#   //4B 00 00 00 
-		("Shot", "int32"),#    //46 00 00 00 
-		("Fire", "int32"),#    //37 00 00 00 
-		("Water", "int32"),#   //00 00 00 00 
-		("Ice", "int32"),#     //0A 00 00 00 
-		("Thunder", "int32"),# //0F 00 00 00 
-		("Dragon", "int32"),#  //14 00 00 00 
-		("Stun", "int32"),#    //0F 00 00 00 
-		("unk10", "int32"),#
-    ])
-    def __str__(self):
-        return '|'.join([" %3d "%self.__getattribute__(hzv) for hzv in list(self.fields.keys())])
-    @staticmethod
-    def header():
-        return '|'.join(["Part#"," Unk ","Sever", "Blunt","Shot ","Fire ", "Water"," Ice "," Thn ", " Dra ", "Stun ", " ES? "])
+from Encryption import EncryptFile,DecryptFile, EPGKEY
 
 class Header (PyCStruct):
 	fields = OrderedDict([
@@ -37,15 +18,25 @@ class Header (PyCStruct):
 		("baseHP", "int32"),#    
         ])
 
-class breakCounts (PyCStruct):
-	fields = OrderedDict([
-		("unkn5", "int32"),#//00 00 00 00 
-		("unkn6", "int32"),#//FF FF FF FF 
-		("unkn7", "int32"),#//FF FF FF FF 
-		("unkn8", "int32"),#//FF FF FF FF 
-		("unkn9", "int32"),#//FF FF FF FF 
+class subParts (PyCStruct):
+    fields = OrderedDict([
+		("base", "int32"),#//00 00 00 00 
+		("broken", "int32"),#//FF FF FF FF 
+		("spec0", "int32"),#//FF FF FF FF 
+		("spec1", "int32"),#//FF FF FF FF 
+		("spec2", "int32"),#//FF FF FF FF 
     ])
+    def empty(self):
+        return all((getattr(self,f) == -1 for f in self.fields))
     
+class breakCounts():
+    def __init__(self):
+        self.subParts = [subParts(),subParts()]
+    def marshall(self,data):
+        for part in subParts:   part.marshall(data)
+    def serialize(self):
+        return b''.join(map(lambda x: x.serialize(), self.subParts))
+        
 class breakData (Mod3Container):
     Mod3Class = breakCounts
     
@@ -54,15 +45,16 @@ class partTrail(PyCStruct):
     	("unkn10", "int32"),#//03 00 00 00 
 		("unkn11", "int32"),#//00 00 00 00 
 		("unkn12", "int32"),#//00 00 00 00 
-		("unkn13", "int32"),#//00 00 00 00     
+		("unkn13", "int16"),#//00 00 00 00     
         ])
 
 class PartHP (PyCStruct):
     fields = OrderedDict([
 		("flinchValue", "int32"),#//2C 01 00 00 
-		("unk1", "int32"),#//FF FF FF FF 
-		("unk2", "int32"),#//FF FF FF FF 
-		("unk3", "int32"),#//00 00 00 00 ]
+		("CleaveLink1", "int32"),#//FF FF FF FF 
+		("CleaveLink2", "int32"),#//FF FF FF FF 
+		("CleaveLink3", "int32"),#//00 00 00 00 ]
+        ("KinsectExtract", "int32"),#//00 00 00 00 ]
     ])
     def __init__(self):
         super().__init__()
@@ -77,6 +69,26 @@ class PartHP (PyCStruct):
 
 class Parts (Mod3Container):
 	Mod3Class = PartHP
+
+class PartHzv (PyCStruct):
+    fields = OrderedDict([
+		("Timer", "float"),#    //00 00 00 00
+		("Sever", "int32"),#   //0A 00 00 00 
+		("Blunt", "int32"),#   //4B 00 00 00 
+		("Shot", "int32"),#    //46 00 00 00 
+		("Fire", "int32"),#    //37 00 00 00 
+		("Water", "int32"),#   //00 00 00 00 
+		("Ice", "int32"),#     //0A 00 00 00 
+		("Thunder", "int32"),# //0F 00 00 00 
+		("Dragon", "int32"),#  //14 00 00 00 
+		("Stun", "int32"),#    //0F 00 00 00 
+		("Mount", "int32"),#
+    ])
+    def __str__(self):
+        return '|'.join([" %3d "%self.__getattribute__(hzv) for hzv in list(self.fields.keys())])
+    @staticmethod
+    def header():
+        return '|'.join(["Part#","Timer","Sever", "Blunt","Shot ","Fire ", "Water"," Ice "," Thn ", " Dra ", "Stun ", "Mount"])
 
 class Hitzones (Mod3Container):
     Mod3Class = PartHzv
@@ -129,6 +141,7 @@ class EPG():
 class EPG_File():
     def __init__(self,path):
         with open(path,"rb") as file:
+            file = DecryptFile(file)
             self.epg = EPG()
             self.epg.marshall(file)
             self.name = path.stem+"_"+str(path.parents[1].stem)

@@ -2,7 +2,7 @@
 //--- 010 Editor v9.0.1 Binary Template
 //
 //      File: 
-//   Authors: hexhexhex
+//   Authors: hexhexhex & AsteriskAmpersand
 //   Version: 
 //   Purpose: 
 //  Category: 
@@ -12,31 +12,14 @@
 //------------------------------------------------
 //common\em\em_difficulty.dtt_dif
 struct Header{
+    byte IBBytes[4];
     uint32 FileID;
  };
 
-struct monSolo{
-    uint32 stringCountSolo;
+struct multipliers{
+    uint32 stringCount;
 
-struct soloValues{
-    uint32 valueCount;
-    float monHPMultiplier;
-    float monDmgMultiplier;
-    float playerDmgMultiplier;
-    float monPartHP;
-    float monStatusBase;
-    float monStatusBuildup;
-    float monStun;
-    float monExhaust;
-    float monMount;
-    };
-};
-
-struct monMulti{
-uint32 stringCountMulti;
-    
-struct multiValues{
-    uint32 valueCount;
+struct monsterValues{
     float monHPMultiplier;
     float monDmgMultiplier;
     float playerDmgMultiplier;
@@ -50,8 +33,13 @@ struct multiValues{
 };
 
 Header DifficultyHeader;
-monSolo SoloCount;
-soloValues soloMultipliers[100];
-monMulti MultiCount;
-multiValues mpMultipliers[100];
+monsterValues soloMultipliers[1000];
+monsterValues mpMultipliers[1000];
+uint32 unknData[7];
 
+local int i;
+for(i=0;i<1000;i++){
+    Printf("HP: %.02f | MonDamage: %.02f | PlayerDamage: %.02f | MonPartHP: %.02f \n",
+            soloMultipliers[i].monHPMultiplier, soloMultipliers[i].monDmgMultiplier, soloMultipliers[i].playerDmgMultiplier,
+            soloMultipliers[i].monPartHP);
+}

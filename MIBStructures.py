@@ -56,27 +56,27 @@ class ObjectiveData(PyCStruct):
 
 class MIBHeader(PyCStruct):
     fields = OrderedDict([
-		("mibSignature","uint16"),
+		("mibSignature","uint64"),
 		("padding","uint32"),
 		("mibID","uint32"),
 		("starRating","ubyte"),
 		("unkn1","uint32"),
 		("unkn2","uint32"),
-		("rankRewards","uint32"),#LR or HR
+		("questRank","uint32"),#LR or HR
 		("mapID","uint32"),
-		("unkn4","uint32"),
-		("playerSpawn","uint32"),
-		("binaryMapToggle","uint32"),
+		("playerSpawn","uint32"),#Camp1, ChoseWWingDrake
+		("fixedSpawn","uint32"),#Scripted Spawn location? 1 Means Yes
+		("binaryMapToggle","uint32"),#God knows
 		("dayNightControl","uint32"),
 		("weatherControl","uint32"),
 		("unkn5","uint32"),
 		("zennyReward","uint32"),
 		("faintPenalty","uint32"),
-		("unkn7","uint32"),
+		("subObjReward","uint32"),
 		("questTimer","uint32"),
 		("unkn9","ubyte"),
 		("monsterIconId","ushort[5]"),
-		("hrRestriction","ubyte"),#difficulltyModifier
+		("hrRestriction","ubyte"),
 		("unkn10","uint32"),   
 		])
     def stage(self):
@@ -95,7 +95,7 @@ class MIBHeader(PyCStruct):
 class MIBObjective(PyCStruct):
     fields = OrderedDict([
         ("objectiveID","ubyte"),
-        ("event","ubyte"),
+        ("multiMonsterFlag","ubyte"),#00/04 Off/On
         ("unkn11","ushort"),
         ("objectiveID1","ushort"),
         ("objectiveAmount","ushort")])
@@ -121,16 +121,14 @@ class MIBObjectiveHeader(PyCStruct):
 class MIBObjectiveSection(PyCStruct):
     fields = OrderedDict([
 		("unkn11","uint32"),
-		("unkn12","uint32"),
-		("highlightedUnknown2","uint32"),
+		("music","uint32"),
+		("endMusic","uint32"),
 		("questType","ubyte"),
 		("questTypeIcon","ubyte"),
 		("ATFlag","ubyte"), #02 enables AT global modifier
 		("unkn14","ubyte"),
 		("REMID","uint32[3]"),
-		("SUPPID1","uint32"),
-		("unkn15","uint32"), #SUPPID2?
-		("unkn16","uint32"), #SUPPID3?
+		("SUPPID1","uint32[3]"),
 		("unkn17","uint32"),
 		("EXP","uint32"),#HR Points
 		("unkn18","uint32"),
@@ -194,32 +192,82 @@ class MIBMonster(PyCStruct):
     def __bool__(self):
         return self.monsterID != -1
 
-        
+class MIBSmallMonster(PyCStruct):
+    fields = OrderedDict([
+		("spawnID","int32"),
+		("hp","uint32"),
+		("attack","int32"),
+        ("status","int32"),
+        ])
 
-class MIBTail(PyCStruct):
+class MIBMapIcon(PyCStruct):
+    fields = OrderedDict([
+		#("icons","MIBMapIcon[17]"),#        
+		("mapIconValue1","int32"),
+        ("mapIconValue2","int32"),
+        ("mapIconColor","int32"),
+        ])
+
+class MIBMapIcons(PyCStruct):
+    fields = OrderedDict([
+		#("icons","MIBMapIcon[17]"),#        
+		("emsIconFlag","int32[5]"),
+        ("emsIconID","int32[5]"),
+        ])
+    def __init__(self):
+        self.icons = [MIBMapIcon() for i in range(17)]
+        super().__init__()
+    def marshall(self,data):
+        [i.marshall(data) for i in self.icons]
+        super().marshall(data)
+    def serialize(self):
+        return b''.join([i.serialize() for i in self.icons])+super().serialize()
+
+class MIBSpawns(PyCStruct):
 	fields = OrderedDict([
-		("unk0","uint32"),
-		("unk1","uint32"),
-		("unk2","uint32"),
-		("unk3","uint32"),
-    	("unk4","ubyte"),
-		("mpDiff","uint32"),
-		("unk6","uint32"),
-		("unk7","uint32"),
-		("spawnRules[4]","uint32"),
-		("spawnHP","uint32"),
-		("spawnChance0","uint32"),
-		("spawnTimer","uint32"),
-		("spawnChanceRest[6]","uint32"),
-		("unkn22","uint32[50]"),
-		("showSmallMonIcon","uint32[5]"),
-		("smallMonIconID","uint32[5]"),
+		("unknFlag","byte"),
+		("multiDiff","uint32"),
+        ("spawnIconCount","uint32"),
+        ("seqSpawnRule","uint32[5]"),
+        ("spawnPercEM6","uint32"),
+        ("spawnGlobalDelay","uint32"),
+        ("spawnPercEM7","uint32"),
+        ("spawnChance3","uint32"),
+        ("spawnChance4","uint32"),
+        ("spawnChance5","uint32"),
+        ("spawnChance6","uint32"),
+        ("spawnChance7","uint32"),
+        ])
+
+class MIBArena(PyCStruct):
+	fields = OrderedDict([
 		("arenaSetId","uint32"),
 		("playerCountRestriction","uint32"),
-		("unkn23","uint32"),
-		("fenceControl","uint32"),
-		("unkn24","uint32[11]"),
+		("arenaRankA","uint32"),
+        ("arenaRankB","uint32"),
+        ("arenaRankC","uint32"),
+        ("unkn0","uint32"),
+        ("unkn1","uint32"),
+        ("unkn2","uint32"),
+		("fenceControl","ubyte"),#00 Disabled 80 Available
+		("unkn3","ubyte"),
+        ("unkn4","ushort"),
+        ("unkn5","uint32"),
+        ("fenceCooldown","uint32"),
+        ("fenceUptime","uint32"),
+        ("unkn6","uint32"),
+        ("unkn7","uint32"),
+        ("unkn8","uint32"),
 		])
+            
+class MIBIBData(PyCStruct):
+	fields = OrderedDict([
+		("unk","uint32[10]"),
+        ("unkByte","byte"),
+        ("unk100","uint32[7]"),
+        ("unk10","uint32[5]"),
+        ("unkBytes","byte[3]"),
+        ])
 
 class MIB():
     REM = REMLib()
@@ -228,7 +276,7 @@ class MIB():
         self.Header = MIBHeader()
         self.Objective = MIBObjectiveSection()
         self.Monsters = [MIBMonster() for _ in range(7)]
-        self.Tail = MIBTail()
+        #TODO !!! 
     
     def marshall(self, data):
         self.Header.marshall(data)
@@ -236,7 +284,8 @@ class MIB():
         [m.marshall(data) for m in self.Monsters]#TODO - missing converting each MIB monster to a pureMonster
         self.binaryMonsters = [m for m in self.Monsters if m]
         self.Monsters = [m.toMonster(self.Objective.ATFlag) for m in self.binaryMonsters]
-        self.Tail.marshall(data)
+        self.Arena.marshall(data)
+        self.IB.marshall(data)
         
     def __str__(self):
         return self.strHeader() +\

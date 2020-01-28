@@ -1,0 +1,52 @@
+//------------------------------------------------
+//--- 010 Editor v9.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+#include "Personal/enums.bt"
+typedef struct{
+    byte IB[4];
+    uint32  fileID<name="File ID">;
+    MONSTERID32  monsterID<name="Monster ID">;
+    uint32  fileVersion<name="File version">;
+}Header;
+
+
+//Below HP value as a decimal percent (100%=1.0 50%=0.5 75%=0.75 etc)
+//Float Selection based off result of Base+(4\*(9-Floor(HP\*9))) for the float location, so 1 float forwards per 1/9th health
+typedef struct//More specifically these will all be reached by a repeating value of their tier (so first tier past 100% is 88.8888 repeating to 99.9999 repeating
+{
+  float   rageBuildMult0 <name="100">;
+  float   rageBuildMult1 <name="89-99.99">;
+  float   rageBuildMult2 <name="78-88">;
+  float   rageBuildMult3 <name="67-77">;
+  float   rageBuildMult4 <name="56-66">;
+  float   rageBuildMult5 <name="44-55">;
+  float   rageBuildMult6 <name="33-43">;
+  float   rageBuildMult7 <name="22-32">;
+  float   rageBuildMult8 <name="11-21">;
+  float   rageBuildMult9 <name="<11">;
+}RageBuildMults;
+
+typedef struct{
+    int32   enrageTriggerRage<name="Rage buildup needed to trigger enrage">; // 0 disables / Negative permarages
+    float   rageDuration<name="Enrage duration">;
+    float   rageSpeedMultiplier<name="Enrage speed multiplier">;
+    float   rageDamageMultiplier<name="Enrage damage multiplier">;
+    float   rageDefenseMultiplier<name="Enrage player attack multiplier">;
+    RageBuildMults ragemults <name="Damage to Rage Rates (By HP %)*">; //Hp percent is BEFORE the hit
+    float   oocRageDecay <name="Unalerted Enrage Decay Multiplier*">; //Unsure how this fully works
+}Rage;
+
+// Display
+Header header <name="Header">;
+Rage rage1<name="Rage 1">;
+Rage rage2<name="Rage 2">;
+
