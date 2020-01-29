@@ -5,13 +5,13 @@ Created on Sun Apr 14 02:46:52 2019
 @author: AsteriskAmpersand
 """
 from Cstruct import Mod3Container, PyCStruct
+from Encryption import DecryptFile,EncryptFile, EPGKEY
 from collections import OrderedDict
 from Chunk import chunkPath
 from pathlib import Path
-from Encryption import EncryptFile,DecryptFile, EPGKEY
-
 class Header (PyCStruct):
 	fields = OrderedDict([
+        ("ibBytes","int32"),
 		("filetype", "int32"),#
 		("ingameID", "int32"),#
 		("section", "int32"),#
@@ -33,7 +33,7 @@ class breakCounts():
     def __init__(self):
         self.subParts = [subParts(),subParts()]
     def marshall(self,data):
-        for part in subParts:   part.marshall(data)
+        for part in self.subParts:   part.marshall(data)
     def serialize(self):
         return b''.join(map(lambda x: x.serialize(), self.subParts))
         
@@ -141,7 +141,7 @@ class EPG():
 class EPG_File():
     def __init__(self,path):
         with open(path,"rb") as file:
-            file = DecryptFile(file)
+            file = DecryptFile(file,EPGKEY)
             self.epg = EPG()
             self.epg.marshall(file)
             self.name = path.stem+"_"+str(path.parents[1].stem)

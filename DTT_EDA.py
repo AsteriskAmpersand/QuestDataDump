@@ -5,10 +5,10 @@ Created on Sun Apr 14 19:02:42 2019
 @author: AsteriskAmpersand
 """
 from Cstruct import PyCStruct
+from Encryption import DecryptFile,EncryptFile, EDAKEY
 from collections import OrderedDict
 from Chunk import chunkPath
 from pathlib import Path
-import pylatex
 
 class StatusData():
     def __init__(self,base,buildup,maxv, name):
@@ -39,7 +39,7 @@ class StatusData():
 
 class Header (PyCStruct):
 	fields = OrderedDict([
-		("fileId", "uint32"),#
+		("fileId", "uint64"),#
 		("monId", "uint32"),#
 		("magic", "char[4]"),#
 ]);
@@ -146,7 +146,7 @@ class EDA_File():
     def __init__(self,path):
         with open(path,"rb") as file:
             self.eda = EDA()
-            self.eda.marshall(file)
+            self.eda.marshall(DecryptFile(file,EDAKEY))
     def getStatus(self):
         return [
          StatusData(self.eda.status.poisonBase, self.eda.status.poisonBuildup,  self.eda.status.poisonMax,  "Poison"),#Poison

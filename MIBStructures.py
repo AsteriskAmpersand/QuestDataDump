@@ -13,14 +13,10 @@ from Diff import DifficultyFile
 from Chunk import chunkPath, tssTextPath
 from pathlib import Path
 import math
-
-from pylatex import Document, Section, Subsection, Command
-from pylatex.section import Chapter
-from pylatex import LineBreak as lbr
        
 timeOfDay = ["Current","Late Night", "Dawn", "Early Day", "Mid Day", "Late Day",
              "Dusk", "Early Night", "Midnight", "Freeze Time"]
-weather = ["Random","No Weather","Base Weather", "Alternate Weather"]
+weather = ["Random","No Weather","Base Weather", "Alternate Weather", "Alternate Weather 2", "Alternate Weather 3"]
         
 class Area():
     Areas = {0x65:"Ancient Forest",
@@ -29,11 +25,12 @@ class Area():
          0x6A:"Great Ravine",
          0x67:"Coral Highlands",
          0x68:"Rotten Vale",
+         0x69:"Elders' Recess",
+         0x70:"Hoarfrost Reach",
          0x0193:"Everstream",
          0x0195:"Confluence of Fates",
          0x2E01:"Astera",
          0x2F01:"Research Lab",
-         0x69:"Elders' Recess",
          0x0199:"Caverns of El Dorado",
          0x0196:"Ancient Forest (Closed)",         
          0x0191:"Opening Cutscene",
@@ -57,8 +54,8 @@ class ObjectiveData(PyCStruct):
 class MIBHeader(PyCStruct):
     fields = OrderedDict([
 		("mibSignature","uint64"),
-		("padding","uint32"),
-		("mibID","uint32"),
+		("padding","ushort"),
+		("mibID","int32"),
 		("starRating","ubyte"),
 		("unkn1","uint32"),
 		("unkn2","uint32"),
@@ -190,7 +187,7 @@ class MIBMonster(PyCStruct):
                 ]
         return Monster(self.monsterID,questModifiers)
     def __bool__(self):
-        return self.monsterID != -1
+        return self.monsterID != -1 and self.monsterID != 0xFFFF
 
 class MIBSmallMonster(PyCStruct):
     fields = OrderedDict([
@@ -276,7 +273,11 @@ class MIB():
         self.Header = MIBHeader()
         self.Objective = MIBObjectiveSection()
         self.Monsters = [MIBMonster() for _ in range(7)]
-        #TODO !!! 
+        self.SmallMonsters = MIBSmallMonster()
+        self.Spawns = MIBSpawns()
+        self.MapIcons = MIBMapIcons()
+        self.Arena = MIBArena()
+        self.IB = MIBIBData()
     
     def marshall(self, data):
         self.Header.marshall(data)
@@ -284,6 +285,9 @@ class MIB():
         [m.marshall(data) for m in self.Monsters]#TODO - missing converting each MIB monster to a pureMonster
         self.binaryMonsters = [m for m in self.Monsters if m]
         self.Monsters = [m.toMonster(self.Objective.ATFlag) for m in self.binaryMonsters]
+        self.SmallMonsters.marshall(data)
+        self.Spawns.marshall(data)
+        self.MapIcons.marshall(data)
         self.Arena.marshall(data)
         self.IB.marshall(data)
         
@@ -292,7 +296,7 @@ class MIB():
                     ('-'*75+'\n') + "Single Player Stats:\n" +\
                     ('-'*75+'\n').join([str(Monster.applyModifiers(self.Diff.spMod())) for Monster in self.Monsters if Monster]) + "\n" +\
                     ('-'*75+'\n') + "Mutliplayer Stats:\n" +\
-                    ('-'*75+'\n').join([str(Monster.applyModifiers(self.Diff.mpMod(self.Tail.mpDiff))) for Monster in self.Monsters if Monster]) + "\n" +\
+                    ('-'*75+'\n').join([str(Monster.applyModifiers(self.Diff.mpMod(self.Spawns.multiDiff))) for Monster in self.Monsters if Monster]) + "\n" +\
                     ('-'*75+'\n') + self.strREM()
     def strREM(self):
         return '\n'.join([str(self.REM[rem]) if rem in self.REM else "Missing REM"  for rem in self.Objective.REMID if rem != 0])
@@ -305,28 +309,23 @@ class MIB():
         m = m.ljust(35) + "Weather: %s"%self.Header.weather()
         message+=m+"\n"
         m = "Time: %d"%self.Header.time()
-        m = m.ljust(35) + "HR Exp: %d"%self.Objective.HRExp()
+        m = m.ljust(35) + "Rank Exp: %d"%self.Objective.HRExp()
         message+=m+"\n"
         m = "Zenny: %d"%self.Header.zenny()
         m = m.ljust(35) + "Faint Count: %d"%self.Header.faints()
         message+=m+"\n"
         return message
-    def latex(self, doc):
-        [(doc.append(line), doc.append(lbr())) for line in self.strHeader().split('\n')]
-        with doc.create(Section("Single Player Monster Stats")):
-            [Monster.applyModifiers(self.Diff.spMod()).latex(doc) for Monster in self.Monsters if Monster]
-        with doc.create(Section("Multiplayer Monster Stats")):
-            [Monster.applyModifiers(self.Diff.mpMod(self.Tail.mpDiff)).latex(doc) for Monster in self.Monsters if Monster]
-        with doc.create(Section("Quest Rewards")):
-            [self.REM[rem].latex(doc) for rem in self.Objective.REMID if rem != 0]
     
     def rank(self):
-        if self.Header.rankRewards == 0:
-            return "LR"
-        if self.Header.rankRewards == 1 and self.Objective.ATFlag == 2:
-            return "AT"
-        else:
-            return "HR"
+        if self.Header.questRank == 0:
+            string = "LR"
+        if self.Header.questRank == 1:
+            string = "HR"
+        if self.Header.questRank == 2:
+            string = "MR"
+        if self.Objective.ATFlag == 2:
+                string += " AT"
+        return string
       
 def chunks(l, n):
     """Yield successive n-sized chunks from l."""
@@ -365,12 +364,6 @@ class MIBFile():
         message += str(self.mib)
         message += '\n\n'
         return message
-    
-    def latex(self, doc):
-        with doc.create(Chapter(str(self.name)+" (%d*)"%self.mib.Header.starRating, label = str(self.name).replace("&",""))):
-            doc.append("Quest File: "+str(self.path.stem))
-            doc.append(lbr())
-            self.mib.latex(doc)
             
     def hexPrint(self):
         message = ("="*80+"\n")*2 +\

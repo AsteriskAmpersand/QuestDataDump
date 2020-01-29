@@ -9,10 +9,8 @@ from collections import OrderedDict
 from Itm import ItmFile
 from Chunk import chunkPath
 from pathlib import Path
-import pylatex
 
 class REM(PyCStruct):
-    
     fields = OrderedDict([
         ("ibbytes", "uint32"),#
     	("signature", "uint32"),#
@@ -41,19 +39,6 @@ class REMfile():
                 first = False
                 message+="%s %2d - %3d%%\n"%((itemName+":").ljust(44), quantity, chance)
         return message
-    
-    def latex(self, doc):
-        first = True
-        tabula = pylatex.table.Tabular("l r r")
-        tabula.add_row(["Item","Quantity","Drop %"])
-        tabula.add_hline()
-        for itemid, quantity, chance in zip(self.rem.itemID, self.rem.itemQuantity, self.rem.itemChance):
-            if itemid != 0 and quantity !=0:
-                itemName = str(self.itemFile[itemid])
-                itemName += '' if not (first and not self.rem.dropMechanic) else " (Guaranteed)"
-                first = False
-                tabula.add_row([itemName,quantity, chance])
-        doc.append(tabula)
                 
          
 class REMLib():

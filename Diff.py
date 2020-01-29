@@ -30,7 +30,6 @@ class values(PyCStruct):
         return [self.__getattribute__(key) for key in list(self.fields.keys())[1:]]
     def __mul__(self, value):
         result = values()
-        result.__setattr__("valueCount",self.valueCount)
         for field in list(self.fields.keys()):
             result.__setattr__(field,self.__getattribute__(field)*value.__getattribute__(field))
         return result

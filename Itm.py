@@ -12,6 +12,7 @@ from Chunk import chunkPath
 
 class ItmHeader  (PyCStruct):
 	fields = OrderedDict([
+        ("ibbytes","uint32"),
 		("identifier", "uint16"),# // 0x00AE
 		("num_entries", "uint32"),#
 ])

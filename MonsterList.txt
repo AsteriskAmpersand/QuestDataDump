@@ -1,4 +1,5 @@
 Empty, -1
+Empty, FFFF
 Anjanath, 00
 Rathalos, 01
 Aptonoth, 02
@@ -50,7 +51,7 @@ Raphinos, 2F
 Shamos, 30
 Barnos, 31
 Girros, 32
-Ancient Leshen?, 33
+Ancient Leshen, 33
 Gastodons, 34
 Noios, 35
 Magmacore, 36
@@ -60,6 +61,42 @@ unknown, 39
 unknown, 3A
 unknown, 3B
 Unknown, 3C 
-(???)Rathian, 3D
-Golden Tribe, 3E
-unknown, 3F
+Tigrex, 3D
+Nargacuga, 3E
+Barioth, 3F
+Savage Deviljho, 40
+Brachydios, 41
+Glavenus, 42
+Acidic Glavenus, 43
+Fulgur Anjanath, 44
+Coral pukie pukie, 45
+Ruiner Nergigante, 46
+Viper tobi kadachi, 47
+Nightshade Paolumu, 48
+Shrieking Legiana, 49
+Ebony Odogaron, 4A
+Blackveil Valhazak, 4B
+Seething Bazelguese, 4C
+Beotodus, 4D
+Banbaro, 4E
+Velkhana, 4F
+Namielle, 50
+Unknown, 51
+Popo, 52
+Anteka, 53
+Wulg, 54
+Cortos, 55
+Boaboa, 56
+Unavaliable, 57
+Gold Rathian, 58
+Silver Rathalos, 59
+Yian Garuga, 5A
+Unavaliable, 5B
+Unavaliable, 5C
+Brute Tigrex, 5D
+Zinogre, 5E
+Unavaliable, 5F
+Unavaliable, 60
+Unavaliable, 61
+Unavaliable, 62
+Scarred Yian Garuga, 63
