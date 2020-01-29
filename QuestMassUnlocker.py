@@ -11,7 +11,7 @@ from Encryption import replaceData
 inpf = Path(r"E:\MHW\ChunkG0")
 outpf = Path(r"E:\Program Files (x86)\Steam\steamapps\common\Monster Hunter World\nativePC(Quests)")
 
-base = 90001
+base = 90201
 qd = "*questData_%s.mib"
 st = "*%s*.gmd"
 candidates = ["01131","01132","01133","01134","01231","01232","01233","01234","01235","01236","01237",

@@ -85,9 +85,10 @@ UnknS0 = [
 		("unknS0_1", "int32[8]"),#
         ("unknS0_2", "float[8]"),#
         ]
-Mount = [
-        *expandStatusP("mount"),
-        ("mountUnknown", "int32"),#
+Mount = expandStatusP("mount")
+MountKD = [
+        *expandStatusP("mountkd"),
+        ("mountkdUnknown", "int32"),#
         ]
 Dung = [
         *expandStatusP("dung"),
@@ -121,7 +122,7 @@ class Status (PyCStruct):
             *Tranq,
             *Flash,
             *UnknS0,
-            *Mount,
+            *MountKD,
             *Dung,
             *Shocktrap,
             *Pitfalltrap,
