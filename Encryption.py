@@ -39,8 +39,8 @@ def EncryptFile(data,key):
     return CapcomEncrypt(data,key)
 
 def replaceData(inFile, outFile, value):
-    w = CapcomDecrypt(inFile.open("rb").read())
-    w[6:10] = struct.pack("I",value)
+    w = inFile.open("rb").read()#CapcomDecrypt()
+    #w[10:14] = struct.pack("I",value)
     with outFile.open("wb") as outf:
-        outf.write(CapcomEncrypt(w))
+        outf.write(w)#CapcomEncrypt()
     return

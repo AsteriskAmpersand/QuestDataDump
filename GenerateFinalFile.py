@@ -8,10 +8,11 @@ from pathlib import Path
 from MIBStructures import MIBFile
 
 def errCal(mib):
-    print(mib)
     try:
         mibber = MIBFile(mib)
         string = str(mibber)
+        if "Special Arena" in mibber.name and "MR" in mibber.name:
+            print('"'+mib.stem.replace("questData_","")+'"')
         return string
     except:
         raise

@@ -6,20 +6,20 @@ Created on Wed Jul 10 20:20:09 2019
 """
 from pathlib import Path
 from shutil import copyfile
-from encryption import replaceData
+from Encryption import replaceData
 
-inpf = Path(r"E:\MHW\Merged")
+inpf = Path(r"E:\MHW\ChunkG0")
 outpf = Path(r"E:\Program Files (x86)\Steam\steamapps\common\Monster Hunter World\nativePC(Quests)")
 
 base = 90001
 qd = "*questData_%s.mib"
 st = "*%s*.gmd"
-candidates = ['00331','00332','00333','00431','00432','00433','00434','00531',
-              '00532','00533','00534','00631','00632','00633','00634','00635',
-              '00636','00637','00731','00732','00733','00734','00735','00736',
-              '00737','00738']#'62609','00804','00991'
+candidates = ["01131","01132","01133","01134","01231","01232","01233","01234","01235","01236","01237",
+            "01238","01331","01332","01333","01334","01335","01336","01337","01338","01339","01340",
+            "01431","01432","01433","01434","01435","01632","01633","01634","01635","01636"]
 
 for ix,candidate in enumerate(candidates):
+    print(candidate)
     index = str(base+ix)
     inQuest = next(inpf.rglob(qd%candidate))
     outFolder = outpf.joinpath(inQuest.parent.relative_to(inpf))

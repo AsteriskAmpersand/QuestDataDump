@@ -11,6 +11,7 @@ from Chunk import chunkPath
 
 class Header (PyCStruct):
 	fields = OrderedDict([
+        ("IBBytes","uint32"),
 		("FileID", "uint32"),#
  ]);
 

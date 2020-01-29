@@ -357,9 +357,10 @@ class MIBFile():
                 self.name = "Name Not Found"
         self.path = path
     def __str__(self):
+        starRating = str(self.mib.Header.starRating) if self.mib.Header.starRating <10 else "MR %d"%(self.mib.Header.starRating-10)
         message = ("="*80+"\n")*2 +\
                     str(self.path.stem)+"\n" +\
-                    (self.name + " (%d *) "%self.mib.Header.starRating).ljust(70)  + ("*"*self.mib.Header.starRating).rjust(10) + "\n" +\
+                    (self.name + " (%s *) "%starRating).ljust(70)  + ("*"*self.mib.Header.starRating).rjust(10) + "\n" +\
                     ("="*80+"\n")*2
         message += str(self.mib)
         message += '\n\n'
