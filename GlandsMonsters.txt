@@ -1,0 +1,57 @@
+Anjanath, 00
+Rathalos, 01
+Great Jagras, 07
+Rathian, 09
+Pink Rathian, 0A
+Azure Rathalos, 0B
+Diablos, 0C
+Black Diablos, 0D
+Kirin, 0E
+Behemoth, 0F
+Kushala Daora, 10
+Lunastra, 11
+Teostra, 12
+Lavasioth, 13
+Deviljho, 14
+Barroth, 15
+Uragaan, 16
+Pukei, 18
+Kulu-Ya-Ku, 1B
+Tzitzi-Ya-Ku, 1C
+Jyuratodus, 1D
+Tobi-Kadachi, 1E
+Paolumu, 1F
+Legiana, 20
+Great Girros, 21
+Odogaron, 22
+Radobaan, 23
+Vaal Hazak, 24
+Dodogama, 25
+Kulve Taroth, 26
+Bazelgeuse, 27
+Tigrex, 3D
+Nargacuga, 3E
+Barioth, 3F
+Savage Deviljho, 40
+Brachydios, 41
+Glavenus, 42
+Acidic Glavenus, 43
+Fulgur Anjanath, 44
+Coral Pukei Pukei, 45
+Ruiner Nergigante, 46
+Viper Tobi-Kadachi, 47
+Nightshade Paolumu, 48
+Shrieking Legiana, 49
+Ebony Odogaron, 4A
+Blackveil Valhazak, 4B
+Seething Bazelguese, 4C
+Beotodus, 4D
+Banbaro, 4E
+Velkhana, 4F
+Namielle, 50
+Gold Rathian, 58
+Silver Rathalos, 59
+Yian Garuga, 5A
+Brute Tigrex, 5D
+Zinogre, 5E
+Scarred Yian Garuga, 63

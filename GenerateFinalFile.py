@@ -11,11 +11,13 @@ def errCal(mib):
     try:
         mibber = MIBFile(mib)
         string = str(mibber)
-        if "Special Arena" in mibber.name and "MR" in mibber.name:
-            print('"'+mib.stem.replace("questData_","")+'"')
+        #if "Special Arena" in mibber.name and "MR" in mibber.name:
+        #    print('"'+mib.stem.replace("questData_","")+'"')
         return string
     except:
         raise
+        print(mib)
+        return ""
 
 def Header():
     return """This is an update to MHW-Library of Babel. This was updated thanks to the work of Deathcream, Moonbunnie, Nekotaga Yuhatora, Kiranico, Dave uRrr, Fandirus and myself (Asterisk).
@@ -25,8 +27,8 @@ The following is a list of every single quest in the game with their respective 
 dataDump = Path(r"G:\Wisdom\MHW-LibraryOfBabel.txt")
 with open(dataDump,"w",encoding = "utf-8") as output:
     output.write(Header()+"\n")
-    output.write("\n".join([errCal(quest) for quest in Path(r"E:\MHW\ChunkG0").rglob("*.mib")]))
-    
+    output.write("\n".join([errCal(quest) for quest in Path(r"E:\MHW\ChunkG0").rglob("*.mib")])+"\n")
+    output.write("\n".join([errCal(quest) for quest in Path(r"E:\MHW\quest").rglob("*.mib")]))
 
 #dataDump = Path(r"G:\Wisdom\MHW-LibraryOfBabel")
 #chapterString = NoEscape(r"""\titleformat{\chapter}[display]{\normalfont\bfseries}{}{0pt}{\Huge}"""+"\n")

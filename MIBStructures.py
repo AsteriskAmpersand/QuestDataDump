@@ -5,7 +5,7 @@ Spyder Editor
 from Cstruct import PyCStruct
 from collections import OrderedDict
 from MonsterData import Monster
-from Crypto.Cipher import Blowfish
+from Encryption import CapcomEncrypt, CapcomDecrypt
 from FileLike import FileLike
 from GMD import GMDFile
 from REM import REMLib
@@ -16,7 +16,7 @@ import math
        
 timeOfDay = ["Current","Late Night", "Dawn", "Early Day", "Mid Day", "Late Day",
              "Dusk", "Early Night", "Midnight", "Freeze Time"]
-weather = ["Random","No Weather","Base Weather", "Alternate Weather", "Alternate Weather 2", "Alternate Weather 3"]
+weather = ["Random","No Weather","Base Weather", "Alternate Weather", "Alternate Weather 2", "Alternate Weather 3","Alternate Weather 4","Alternate Weather 5"]
         
 class Area():
     Areas = {0x65:"Ancient Forest",
@@ -26,7 +26,6 @@ class Area():
          0x67:"Coral Highlands",
          0x68:"Rotten Vale",
          0x69:"Elders' Recess",
-         0x6a:"Hoarfrost Reach",
          0x6b:"Hoarfrost Reach",
          0x6c:"Hoarfrost Reach",
          0x19b:"Seliana Supply Cache",
@@ -115,7 +114,7 @@ class MIBObjectiveHeader(PyCStruct):
         super().marshall(data)
         for subobj in self.subObjectives:
             subobj.marshall(data)
-    def serialize(self,data):
+    def serialize(self):
         return b''.join([obj.serialize() for obj in self.Objectives]) +\
                 super().serialize() +\
                 b''.join([obj.serialize() for obj in self.subObjectives])
@@ -143,7 +142,7 @@ class MIBObjectiveSection(PyCStruct):
         self.Header.marshall(data)
         super().marshall(data)
     def serialize(self):
-        return self.Header.serialize()+super.serialize()
+        return self.Header.serialize()+super().serialize()
     def HRExp(self):
         return self.EXP 
 
@@ -175,10 +174,10 @@ class MIBMonster(PyCStruct):
             return "Arch-Tempered "
         return "Tempered "
     
-    def toMonster(self, AT):
+    def toMonster(self, rank, AT):
         questModifiers = [self.spawnID, self.tempering(AT,self.temperedFlag) ,
                           [i for i in range(-self.HealthAndDamageVariance,self.HealthAndDamageVariance+1)], 
-                          self.size, self.sizeVariation]
+                          self.size, self.sizeVariation, rank]
         questModifiers += [
                 self.monsterHealth,
                 self.monsterDamage,
@@ -287,14 +286,25 @@ class MIB():
     def marshall(self, data):
         self.Header.marshall(data)
         self.Objective.marshall(data)
-        [m.marshall(data) for m in self.Monsters]#TODO - missing converting each MIB monster to a pureMonster
-        self.binaryMonsters = [m for m in self.Monsters if m]
-        self.Monsters = [m.toMonster(self.Objective.ATFlag) for m in self.binaryMonsters]
+        self.rawMonsters = [m.marshall(data) for m in self.Monsters]#TODO - missing converting each MIB monster to a pureMonster
+        self.binaryMonsters = [m for m in self.rawMonsters if m]
+        self.Monsters = [m.toMonster(self.Header.questRank,self.Objective.ATFlag) for m in self.binaryMonsters]
         self.SmallMonsters.marshall(data)
         self.Spawns.marshall(data)
         self.MapIcons.marshall(data)
         self.Arena.marshall(data)
         self.IB.marshall(data)
+        
+    def serialize(self):
+        return self.Header.serialize() +\
+                self.Objective.serialize() +\
+                b''.join([b.serialize() for b in self.rawMonsters]) +\
+                self.SmallMonsters.serialize() +\
+                self.Spawns.serialize() +\
+                self.MapIcons.serialize() +\
+                self.Arena.serialize() +\
+                self.IB.serialize()
+
         
     def __str__(self):
         return self.strHeader() +\
@@ -331,24 +341,12 @@ class MIB():
         if self.Objective.ATFlag == 2:
                 string += " AT"
         return string
-      
-def chunks(l, n):
-    """Yield successive n-sized chunks from l."""
-    for i in range(0, len(l), n):
-        yield l[i:i + n]
-        
-def endianness_reversal(data):
-    return b''.join(map(lambda x: x[::-1],chunks(data, 4)))
-
-def CapcomBlowfish(file):
-    cipher = Blowfish.new("TZNgJfzyD2WKiuV4SglmI6oN5jP2hhRJcBwzUooyfIUTM4ptDYGjuRTP".encode("utf-8"), Blowfish.MODE_ECB)
-    return endianness_reversal(cipher.decrypt(endianness_reversal(file)))
 
 class MIBFile():
     mibText = lambda x : r"%s\common\text\quest\%s_eng.gmd"%(chunkPath, Path(x).stem.replace("questData_","q"))
     mibTssText = lambda x : r"%s\%s_eng.gmd"%(tssTextPath, Path(x).stem.replace("questData_","q"))
     def __init__(self, path):
-        data = FileLike(CapcomBlowfish(open(path,'rb').read()))
+        data = FileLike(CapcomDecrypt(open(path,'rb').read()))
         self.mib = MIB()
         self.mib.marshall(data)
         try:
@@ -361,6 +359,10 @@ class MIBFile():
             except:
                 self.name = "Name Not Found"
         self.path = path
+    def write(self,outpath):
+        with open(outpath,"wb") as outfile:
+            data = self.mib.serialize()
+            outfile.write(CapcomEncrypt(data))            
     def __str__(self):
         starRating = str(self.mib.Header.starRating) if self.mib.Header.starRating <10 else "MR %d"%(self.mib.Header.starRating-10)
         message = ("="*80+"\n")*2 +\

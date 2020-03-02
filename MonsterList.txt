@@ -91,8 +91,8 @@ Unavaliable, 57
 Gold Rathian, 58
 Silver Rathalos, 59
 Yian Garuga, 5A
-Unavaliable, 5B
-Unavaliable, 5C
+Rajang, 5B
+Furious Rajang, 5C
 Brute Tigrex, 5D
 Zinogre, 5E
 Unavaliable, 5F

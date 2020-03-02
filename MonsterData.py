@@ -18,14 +18,19 @@ import csv
 import json
 from DTT_EPG import EPG_Library
 from DTT_EDA import EDA_Library, StatusData
-
+from Size import masterSize
 class Parts():
     def __init__(self, Monster, QuestBody, QuestModifiers, DifficultyModifiers):
+        self.id = Monster.id
         self.name = Monster.name
-        self.SpawnType, self.Tempering, self.HealthVariance, self.BaseSize, self.SizeTable = QuestBody
+        self.SpawnType, self.Tempering, self.HealthBaseVariance, self.BaseSize, self.SizeTable, self.Rank = QuestBody
+        self.crowns = masterSize.getCrowns(self.id)
+        self.SizeRange = masterSize[self.SizeTable].recenter(self.BaseSize)
+        self.Crowns = ''.join(("g" if (self.SizeRange.extrema[0])<=self.crowns[0] else "-",
+                       "G" if (self.SizeRange.extrema[1])>=self.crowns[1] else "-"))
         qmod = iter(QuestModifiers)
         qhp = next(qmod)
-        self.HealthVariance = [int(DifficultyModifiers(qhp+index).monHPMultiplier*Monster.hzv.HP()) for index in self.HealthVariance]
+        self.HealthVariance = [int(DifficultyModifiers(qhp+index).monHPMultiplier*Monster.hzv.HP()) for index in self.HealthBaseVariance]
         self.Attack = DifficultyModifiers(next(qmod)).monDmgMultiplier*100
         self.PlayerDamageMultiplier = DifficultyModifiers(next(qmod)).playerDmgMultiplier*100
 
@@ -37,10 +42,11 @@ class Parts():
         self.Mount =                DifficultyModifiers(next(qmod)).monMount
         #status
         stati = Monster.status.getStatus()#Status Object
-        self.Poison, self.Sleep, self.Paralysis, self.Blast = tuple(map(lambda x: x.Modify(self.StatusBaseMult, self.StatusBuildupMult), stati[:-3]))
-        self.KO = stati[-3].Modify(self.Stun,self.Stun)
-        self.Exhaust = stati[-2].Modify(self.Exhaust,self.Exhaust)
-        self.Mount = stati[-1].Modify(self.Mount,self.Mount)
+        self.Poison, self.Sleep, self.Paralysis, self.Blast = tuple(map(lambda x: x.Modify(self.StatusBaseMult, self.StatusBuildupMult), stati[:-4]))
+        self.KO = stati[-4].Modify(self.Stun,self.Stun)
+        self.Exhaust = stati[-3].Modify(self.Exhaust,self.Exhaust)
+        self.Mount = stati[-2].Modify(self.Mount,self.Mount)
+        self.Clagger = stati[-1].Modify(self.Rank,[DifficultyModifiers(qhp+index).monHPMultiplier for index in self.HealthBaseVariance])
         #parts
         #If we had part names they could be here
         self.Parts = [part.flinchValue*self.PartMult for part in Monster.hzv.Parts()]
@@ -51,12 +57,13 @@ class Parts():
     def strMonsterBlock(self):
         message = self.Tempering+self.name+"\n"
         message += "HP Rolls: " + " - ".join(map(str,self.HealthVariance))+"\n"
-        message += "Base Size: %3d | Size Table: %3d"%(int(self.BaseSize),self.SizeTable)+"\n"
+        message += "Base Size: %3d | Size Table %d %s: %s"%(int(self.BaseSize),self.SizeTable,self.Crowns,self.SizeRange)+"\n"
         message += "Attack: %3d%% | Player Damage Bonus: %3d%% | Spawn Type: %2d"%(int(self.Attack),int(self.PlayerDamageMultiplier),int(self.SpawnType))+"\n"
         return message
     def strStatus(self):
         message = StatusData.strHeader()
         message += "".join([str(status) for status in [self.Poison, self.Sleep, self.Paralysis, self.Blast, self.KO, self.Exhaust, self.Mount]]) + "\n"
+        message += str(self.Clagger)+"\n"
         return message
     def strParts(self):
         message= "Breakable Parts:\n"
@@ -97,6 +104,7 @@ class Monster():
     with open("MonsterList.txt","r") as ml:names ={int(line[1], base=16):line[0] for line in csv.reader(ml)}
     
     def __init__(self, monsterID, QuestModifiers):
+        self.id = monsterID
         self.name = self.names[monsterID] if monsterID in self.names else "Unkonwn Monster %d" % monsterID
         self.hzv = self.epg[monsterID]
         self.partnames = self.partnamelib[self.hzv.name] if self.hzv.name in self.partnamelib else dummyHZVs
@@ -107,7 +115,7 @@ class Monster():
         QuestModifiers = self.questModifiers
         #Quest: Spawn, Tempered, HealthVariance, Size, RSiz Table
         #Quest and Diff: HP, Attack,PlayerDamage,Status,Stun,Exhaust,Mount,
-        qMods, QuestModifiers = QuestModifiers[:5],QuestModifiers[5:]
+        qMods, QuestModifiers = QuestModifiers[:6],QuestModifiers[6:]
         self.Parts = Parts(self,qMods, QuestModifiers, DifficultyModifiers)
         return self.Parts
         

@@ -7,7 +7,7 @@ Created on Wed Jul 10 20:20:09 2019
 from pathlib import Path
 from shutil import copyfile
 from Encryption import replaceData
-
+from MIBStructures import MIBFile
 inpf = Path(r"E:\MHW\ChunkG0")
 outpf = Path(r"E:\Program Files (x86)\Steam\steamapps\common\Monster Hunter World\nativePC(Quests)")
 
@@ -25,6 +25,13 @@ for ix,candidate in enumerate(candidates):
     outFolder = outpf.joinpath(inQuest.parent.relative_to(inpf))
     outQuest = outFolder.joinpath("questData_%s.mib"%index)
     replaceData(inQuest,outQuest,base+ix)
+
+    mibdata = MIBFile(outQuest)
+    for monster in mibdata.mib.rawMonsters:
+        monster.monsterHealth -= monster.HealthAndDamageVariance
+        monster.HealthAndDamageVariance = 0
+    mibdata.write(outQuest)
+
     for stringFile in [a for a in inpf.rglob(st%candidate) if "common" in str(a)]:
         outFolder = outpf.joinpath(stringFile.parent.relative_to(inpf))
         outQuest = outFolder.joinpath(stringFile.stem.replace(candidate,index)+".gmd")

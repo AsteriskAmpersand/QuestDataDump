@@ -6,4 +6,4 @@ Created on Sun Apr 14 18:44:16 2019
 """
 
 chunkPath = r"E:\MHW\ChunkG0"
-tssTextPath = r"E:\MHW\ChunkG0\quest\text"
+tssTextPath = r"E:\MHW\quest\text"

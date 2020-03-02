@@ -86,7 +86,21 @@ class GMDFile():
         return self.gmd.string_block[index]
     def __iter__(self):
         return iter(self.gmd.string_block)
-"""
+    
+"""    
+if "__main__" in __name__:
+    from pathlib import Path
+    with open("StringDump.txt","w",encoding = "utf8") as sd:
+        translations = []
+        languages = []
+        for path in list(Path(r"E:\MHW").rglob("*_eng.gmd")):
+            gmd = GMDFile(path)
+            for string in gmd.gmd.keyblock:
+                sd.write(string+'\n')
+            for string in gmd.gmd.string_block:
+                sd.write(string+'\n')
+         
+
 if "__main__" in __name__:
     from pathlib import Path
     translations = []

@@ -81,6 +81,7 @@ class PyCStruct():
                 
     def marshall(self,data):
         [self.__setattr__(attr, value) for attr, value in self.CStruct.marshall(data).items()]
+        return self
         
     def serialize(self):
         return self.CStruct.serialize({key:self.__getattribute__(key) for key in self.fields})
@@ -173,6 +174,7 @@ class Mod3Container():
         self.count.marshall(data)
         self.mod3Array = [self.Mod3Class() for _ in range(self.count)]
         [x.marshall(data) for x in self.mod3Array]
+        return self
         
     def serialize(self):
         return self.count.serialize()+b''.join([element.serialize() for element in self.mod3Array])

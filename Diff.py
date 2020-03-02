@@ -28,7 +28,7 @@ class values(PyCStruct):
 		("monMount", "float"),#
     ])
     def toModifiers(self):
-        return [self.__getattribute__(key) for key in list(self.fields.keys())[1:]]
+        return [self.__getattribute__(key) for key in list(self.fields.keys())]
     def __mul__(self, value):
         result = values()
         for field in list(self.fields.keys()):
@@ -68,4 +68,16 @@ class DifficultyFile():
         return lambda key: self.Difficulty.soloMultipliers[key]
     def mpMod(self, hr):
         return lambda key: self.Difficulty.mpMultipliers[hr]*self.Difficulty.soloMultipliers[key]
+    def write(self,filepath):
+        with open(filepath,"w") as outf:
+            self.outputArray(outf,"soloMultipliers")
+            outf.write("\n")
+            self.outputArray(outf,"mpMultipliers")
+    def outputArray(self,outf,prop):
+        outf.write(','.join([val for val in values.fields]))
+        outf.write("\n")
+        for val in getattr(self.Difficulty,prop):
+            outf.write(','.join([str(getattr(val,field)) for field in values.fields]))
+            outf.write("\n")
+        return
         
