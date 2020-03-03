@@ -1,102 +1,102 @@
+Acidic Glavenus, 43
+Ancient Leshen, 33
+Anjanath, 00
+Anteka, 53
+Apceros, 28
+Aptonoth, 02
+Azure Rathalos, 0B
+Banbaro, 4E
+Barioth, 3F
+Barnos, 31
+Barroth, 15
+Bazelgeuse, 27
+Behemoth, 0F
+Beotodus, 4D
+Black Diablos, 0D
+Blackveil Vaal Hazak, 4B
+Boaboa, 56
+Brachydios, 41
+Brute Tigrex, 5D
+Coral Pukei-Pukei, 45
+Cortos, 55
+Deviljho, 14
+Diablos, 0C
+Dodogama, 25
+Ebony Odogaron, 4A
 Empty, -1
 Empty, FFFF
-Anjanath, 00
-Rathalos, 01
-Aptonoth, 02
-Jagras, 03
-Zorah Magdaros, 04
-Mosswine, 05
+Fulgur Anjanath, 44
+Furious Rajang, 5C
+Gajalaka, 38
 Gajau, 06
-Great Jagras, 07
-Kestodon(Male), 08
-Rathian, 09
-Pink Rathian, 0A
-Azure Rathalos, 0B
-Diablos, 0C
-Black Diablos, 0D
-Kirin, 0E
-Behemoth, 0F
-Kushala Daora, 10
-Lunastra, 11
-Teostra, 12
-Lavasioth, 13
-Deviljho, 14
-Barroth, 15
-Uragaan, 16
-Leshen, 17
-Pukei, 18
-Nergigante, 19
-Xeno'Jiiva, 1A
-Kulu-Ya-Ku, 1B
-Tzitzi-Ya-Ku, 1C
-Jyuratodus, 1D
-Tobi-Kadachi, 1E
-Paolumu, 1F
-Legiana, 20
-Great Girros, 21
-Odogaron, 22
-Radobaan, 23
-Vaal Hazak, 24
-Dodogama, 25
-Kulve Taroth, 26
-Bazelgeuse, 27
-Apceros, 28
-Kelbi, 29
-Kelbi(2), 2A
-Hornetaurs, 2B
-Vespoid, 2C
-Mernos, 2D
-Kestodon(Female), 2E
-Raphinos, 2F
-Shamos, 30
-Barnos, 31
-Girros, 32
-Ancient Leshen, 33
 Gastodons, 34
-Noios, 35
+Girros, 32
+Glavenus, 42
+Gold Rathian, 58
+Great Girros, 21
+Great Jagras, 07
+Hornetaurs, 2B
+Jagras, 03
+Jyuratodus, 1D
+Kelbi(2), 2A
+Kelbi, 29
+Kestodon(Female), 2E
+Kestodon(Male), 08
+Kirin, 0E
+Kulu-Ya-Ku, 1B
+Kulve Taroth, 26
+Kushala Daora, 10
+Lavasioth, 13
+Legiana, 20
+Leshen, 17
+Lunastra, 11
 Magmacore, 36
 Magmacore2, 37
-Gajalaka, 38
-unknown, 39
-unknown, 3A
-unknown, 3B
-Unknown, 3C 
-Tigrex, 3D
-Nargacuga, 3E
-Barioth, 3F
-Savage Deviljho, 40
-Brachydios, 41
-Glavenus, 42
-Acidic Glavenus, 43
-Fulgur Anjanath, 44
-Coral pukie pukie, 45
-Ruiner Nergigante, 46
-Viper tobi kadachi, 47
-Nightshade Paolumu, 48
-Shrieking Legiana, 49
-Ebony Odogaron, 4A
-Blackveil Valhazak, 4B
-Seething Bazelguese, 4C
-Beotodus, 4D
-Banbaro, 4E
-Velkhana, 4F
+Mernos, 2D
+Mosswine, 05
 Namielle, 50
-Unknown, 51
+Nargacuga, 3E
+Nergigante, 19
+Nightshade Paolumu, 48
+Noios, 35
+Odogaron, 22
+Paolumu, 1F
+Pink Rathian, 0A
 Popo, 52
-Anteka, 53
-Wulg, 54
-Cortos, 55
-Boaboa, 56
-Unavaliable, 57
-Gold Rathian, 58
-Silver Rathalos, 59
-Yian Garuga, 5A
+Pukei-Pukei, 18
+Radobaan, 23
 Rajang, 5B
-Furious Rajang, 5C
-Brute Tigrex, 5D
-Zinogre, 5E
+Raphinos, 2F
+Rathalos, 01
+Rathian, 09
+Ruiner Nergigante, 46
+Savage Deviljho, 40
+Scarred Yian Garuga, 63
+Seething Bazelguese, 4C
+Shamos, 30
+Shrieking Legiana, 49
+Silver Rathalos, 59
+Teostra, 12
+Tigrex, 3D
+Tobi-Kadachi, 1E
+Tzitzi-Ya-Ku, 1C
+Unavaliable, 57
 Unavaliable, 5F
 Unavaliable, 60
 Unavaliable, 61
 Unavaliable, 62
-Scarred Yian Garuga, 63
+unknown, 39
+unknown, 3A
+unknown, 3B
+Unknown, 3C 
+Shara Ishvalda, 51
+Uragaan, 16
+Vaal Hazak, 24
+Velkhana, 4F
+Vespoid, 2C
+Viper Tobi-Kadachi, 47
+Wulg, 54
+Xeno'jiiva, 1A
+Yian Garuga, 5A
+Zinogre, 5E
+Zorah Magdaros, 04

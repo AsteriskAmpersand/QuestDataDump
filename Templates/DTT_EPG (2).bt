@@ -11,7 +11,7 @@
 //   History: 
 //------------------------------------------------
 //Edited from Asterisk's base, my changes may or may not be accurate
-#include "Personal/enums.bt"
+//#include "Personal/enums.bt"
 
 
 typedef enum <int32>
@@ -27,7 +27,7 @@ byte IB[4];
 typedef struct
    {
     int32 filetype;
-    MONSTERID32 ingameID <name="Monster ID">;
+    uint32 ingameID <name="Monster ID">;
     int32 section;
     int32 baseHP <name="Monster Base HP">;    
    }Header;
@@ -110,7 +110,7 @@ typedef struct
 typedef byte bool;
 typedef struct
    {
-    ATKtype damageType <name="Damage Type Required">; //0-Any 1-Sever 2-Blunt 3-Shot
+    uint32 damageType <name="Damage Type Required">; //0-Any 1-Sever 2-Blunt 3-Shot
     int32 unkn1;
     int32 unkn2;
     int32 specialHP <name="Special Part HP">;
