@@ -65,7 +65,7 @@ class PartHP (PyCStruct):
         self.breaksData.marshall(data)
         self.trailing.marshall(data)
     def serialize(self):
-        return super().serialize()+self.breaksData.serialize+self.trailing.serialize
+        return super().serialize()+self.breaksData.serialize()+self.trailing.serialize()
 
 class Parts (Mod3Container):
 	Mod3Class = PartHP
@@ -108,9 +108,9 @@ class CleaveData (PyCStruct):
 		("unkn2", "int32"),#
 		("cleaveHP", "int32"),#
 		("unkn4", "int32"),#
-		("SeverMaybe", "bool"),#
-		("BluntMaybe", "bool"),#
-		("ShotMaybe", "bool"),#    
+		("Specialunkn", "bool"),#
+		("Specialunkn2", "bool"),#
+		("Specialunkn3", "bool"),#    
     ])
 
 class CleaveZones (Mod3Container):
@@ -118,13 +118,29 @@ class CleaveZones (Mod3Container):
 
 class UnkData(PyCStruct):
 	fields = OrderedDict([
-    ("int32", "unk0[4]"),#
-	 ("unk1", "byte[2]"),#
-	 ("unk2", "int32[2]"),#
+    ("unkn0","int32"),
+    ("unkn1","int32"),
+    ("unkn2","int32"),
+    ("unkn9","byte"),
+    ("unkn3","int32"),
+    ("unkn4","byte"),
+    ("unkn5","byte"),
+    ("unkn6","int32"),
+    ("unkn7","byte"),
+    ("unkn8","byte"),
+    ("unkn10","byte")
     ])
 
 class UnkZones (Mod3Container):
 	Mod3Class = UnkData
+    
+class Padding(PyCStruct):
+	fields = OrderedDict([
+		("padding", "int32[2]")])
+
+def pad(data):
+    #print(len(data))
+    return data + b'\x00'*((-len(data))%16)
     
 class EPG():
     def __init__(self):
@@ -132,9 +148,11 @@ class EPG():
         self.Parts = Parts()
         self.Hitzones = Hitzones()
         self.CleaveZones = CleaveZones()
-        self.parts = [self.Header, self.Parts, self.Hitzones, self.CleaveZones]
+        self.UnkZones = UnkZones()
+        self.Padding = Padding()
+        self.parts = [self.Header, self.Parts, self.Hitzones, self.CleaveZones, self.UnkZones,self.Padding]
     def serialize(self):
-        return b''.join([part.serialize() for part in self.parts])
+        return pad(b''.join([part.serialize() for part in self.parts]))
     def marshall(self,data):
         for part in self.parts:part.marshall(data)
         
@@ -145,6 +163,10 @@ class EPG_File():
             self.epg = EPG()
             self.epg.marshall(file)
             self.name = path.stem+"_"+str(path.parents[1].stem)
+    def serialize(self):
+        #print(len(self.epg.serialize()))
+        return EncryptFile(self.epg.serialize(),EPGKEY)
+        
     def HP(self):
         return self.epg.Header.baseHP
     def Parts(self):
@@ -169,5 +191,8 @@ class EPG_Library():
         for hitzoneFile in list(Path(chunkPath+r"\em").rglob("*.dtt_epg")):
             epg = EPG_File(hitzoneFile)
             self.hitzoneData[epg.epg.Header.ingameID]=epg
+            #epg.serialize()
     def __getitem__(self, key):
         return self.hitzoneData[key]
+    def __iter__(self):
+        return iter(self.hitzoneData)

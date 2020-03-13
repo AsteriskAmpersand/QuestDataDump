@@ -7,16 +7,34 @@ Created on Wed Apr 10 19:15:02 2019
 from pathlib import Path
 from MIBStructures import MIBFile
 
+root = r"E:\MHW\ChunkG0"
+unencrypted = r"E:\MHWDecryptedQuests"
+def writeUnencrypted(mib):
+    try:
+        mibber = MIBFile(mib)
+        string = str(mibber.hexPrint())
+        p = Path(unencrypted).joinpath(mib.relative_to(root))
+        p.parent.mkdir(parents = True, exist_ok = True)
+        with open(p,"wb") as outf:
+            outf.write(mibber.mib.serialize())
+        return string
+    except Exception as e:
+        #raise
+        print("%s - %s"%(mib,e))
+        return ""
+
 def errCal(mib):
     try:
         mibber = MIBFile(mib)
         string = str(mibber)
         #if "Special Arena" in mibber.name and "MR" in mibber.name:
         #    print('"'+mib.stem.replace("questData_","")+'"')
+        
         return string
-    except:
-        raise
+    except Exception as e:
+        #raise
         print(mib)
+        print(e)
         return ""
 
 def Header():

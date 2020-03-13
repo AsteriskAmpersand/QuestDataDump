@@ -28,6 +28,7 @@ class Area():
          0x69:"Elders' Recess",
          0x6b:"Hoarfrost Reach",
          0x6c:"Hoarfrost Reach",
+         0x6d:"Guiding Lands",
          0x19b:"Seliana Supply Cache",
          0x19c:"Origin Isle (Ruiner Arena)",
          0x19d:"Origin Isle",
@@ -38,6 +39,7 @@ class Area():
          0x0199:"Caverns of El Dorado",
          0x0196:"Ancient Forest (Closed)",         
          0x0191:"Opening Cutscene",
+         0x019f: "Secluded Valley",
          0xCA:"Arena"}
     
     def __getitem__(self, key):
@@ -367,7 +369,7 @@ class MIBFile():
         starRating = str(self.mib.Header.starRating) if self.mib.Header.starRating <10 else "MR %d"%(self.mib.Header.starRating-10)
         message = ("="*80+"\n")*2 +\
                     str(self.path.stem)+"\n" +\
-                    (self.name + " (%s *) "%starRating).ljust(70)  + ("*"*self.mib.Header.starRating).rjust(10) + "\n" +\
+                    (self.name + " (%s *) "%starRating).ljust(70)  + ("*"*(self.mib.Header.starRating%10)).rjust(10) + "\n" +\
                     ("="*80+"\n")*2
         message += str(self.mib)
         message += '\n\n'

@@ -80,15 +80,15 @@ Teostra, 12
 Tigrex, 3D
 Tobi-Kadachi, 1E
 Tzitzi-Ya-Ku, 1C
-Unavaliable, 57
-Unavaliable, 5F
-Unavaliable, 60
-Unavaliable, 61
-Unavaliable, 62
-unknown, 39
-unknown, 3A
-unknown, 3B
-Unknown, 3C 
+Unavailable 57, 57
+Stygian Zinogre, 5F
+Unavailable 60, 60
+Safi'Jiiva, 61
+Unavailable 62, 62
+unknown 39, 39
+unknown 3A, 3A
+unknown 3B, 3B
+Unknown 3C, 3C 
 Shara Ishvalda, 51
 Uragaan, 16
 Vaal Hazak, 24
@@ -96,7 +96,7 @@ Velkhana, 4F
 Vespoid, 2C
 Viper Tobi-Kadachi, 47
 Wulg, 54
-Xeno'jiiva, 1A
+Xeno'Jiiva, 1A
 Yian Garuga, 5A
 Zinogre, 5E
 Zorah Magdaros, 04
